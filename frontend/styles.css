@@ -725,3 +725,288 @@ input[type="text"]:focus {
   .footer-grid { grid-template-columns: 1fr; }
 }
 
+/* ==========================================================================
+   Zenith Growth Lab Overlay
+   ========================================================================== */
+
+.lab-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(3, 5, 8, 0.95);
+    backdrop-filter: blur(20px) saturate(200%);
+    z-index: 2000;
+    display: none;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 2rem;
+}
+
+.lab-overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+.lab-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.lab-content {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 2rem;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.lab-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    overflow-y: auto;
+    padding-right: 1rem;
+}
+
+.lab-main {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.lab-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+}
+
+.lab-card:hover {
+    border-color: hsla(var(--accent), 0.3);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.main-topology {
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+}
+
+.main-topology .panel-header {
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    z-index: 10;
+    background: rgba(0,0,0,0.5);
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    backdrop-filter: blur(8px);
+    width: auto;
+}
+
+.topology-canvas {
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(31, 111, 235, 0.05) 0%, transparent 70%);
+}
+
+.lab-mini-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.mini-stat {
+    background: rgba(0,0,0,0.2);
+    padding: 1rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.mini-stat .label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.mini-stat .value {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: white;
+}
+
+.reasoning-feed {
+    flex-grow: 1;
+    overflow-y: auto;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    padding: 1rem;
+    background: rgba(0,0,0,0.3);
+    border-radius: 16px;
+    line-height: 1.6;
+}
+
+.reasoning-feed span.thought {
+    color: hsla(var(--primary), 1);
+    opacity: 0.8;
+}
+
+.reasoning-feed span.action {
+    color: hsla(var(--accent), 1);
+    font-weight: bold;
+}
+
+@media (max-width: 1200px) {
+    .lab-content {
+        grid-template-columns: 1fr;
+    }
+    .lab-sidebar {
+        order: 2;
+    }
+    .lab-main {
+        order: 1;
+        height: 400px;
+        margin-bottom: 2rem;
+    }
+}
+
+
+
+/* ==========================================================================
+   Quantum Forge Overlay (Amethyst & Gold)
+   ========================================================================== */
+
+.forge-overlay {
+    background: rgba(10, 5, 15, 0.96); /* Deeper dark purple */
+    border: 1px solid rgba(191, 158, 255, 0.2);
+}
+
+.forge-overlay .lab-card {
+    background: rgba(191, 158, 255, 0.03);
+    border: 1px solid rgba(191, 158, 255, 0.1);
+}
+
+.forge-overlay .lab-card:hover {
+    background: rgba(191, 158, 255, 0.06);
+    border-color: rgba(191, 158, 255, 0.4);
+    box-shadow: 0 0 30px rgba(191, 158, 255, 0.1);
+}
+
+.habit-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.habit-item:hover {
+    background: rgba(191, 158, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.habit-info h6 {
+    color: white;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+}
+
+.habit-info span {
+    font-size: 0.75rem;
+    color: #8b949e;
+}
+
+.log-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid rgba(191, 158, 255, 0.3);
+    background: transparent;
+    color: transparent;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.log-btn.logged {
+    background: #bf9eff;
+    border-color: #bf9eff;
+    color: white;
+    box-shadow: 0 0 15px rgba(191, 158, 255, 0.5);
+}
+
+.log-btn.logged::after {
+    content: '✓';
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.prediction-entry {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(191, 158, 255, 0.1);
+}
+
+.prediction-entry h6 {
+    color: #bf9eff;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    margin-bottom: 0.75rem;
+}
+
+.prediction-persona {
+    font-size: 0.7rem;
+    background: rgba(191, 158, 255, 0.1);
+    color: #bf9eff;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    margin-left: 0.5rem;
+}
+
+.prediction-text {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+}
+
+.prediction-text b {
+    color: white;
+    font-weight: 600;
+}
+
+#constellation-container svg {
+    width: 100%;
+    height: 100%;
+}
+
+.constellation-node {
+    cursor: pointer;
+}
+
+.constellation-link {
+    stroke: rgba(191, 158, 255, 0.2);
+    stroke-width: 1;
+}
