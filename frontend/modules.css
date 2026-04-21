@@ -1,0 +1,118 @@
+/* Specific Feature Modules Style */
+
+/* Success Dashboard */
+.success-dashboard {
+  display: flex;
+  justify-content: space-around;
+  padding: 4rem 10%;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.stat-value {
+  font-family: 'Outfit', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: hsla(var(--accent), 1);
+  background: linear-gradient(to bottom, white, hsla(var(--accent), 1));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Milvus Visuals */
+.neural-node {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: hsla(var(--accent), 1);
+  border-radius: 50%;
+  box-shadow: 0 0 20px hsla(var(--accent), 0.5);
+  animation: floatNodes 4s ease-in-out infinite;
+}
+
+.milvus-section {
+  background: radial-gradient(circle at 80% 20%, hsla(var(--accent), 0.05) 0%, transparent 50%);
+  padding: 100px 10%;
+  border-radius: 40px;
+  border: 1px solid var(--border);
+  margin: 100px 5%;
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+/* Lab & Forge Overlays */
+.lab-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(3, 5, 8, 0.95);
+    backdrop-filter: blur(20px) saturate(200%);
+    z-index: 2000;
+    display: none;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 2rem;
+}
+
+.lab-overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+.lab-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+}
+
+.lab-card:hover {
+    border-color: hsla(var(--accent), 0.3);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.topology-canvas {
+    width: 100%;
+    height: 100%;
+}
+
+.reasoning-feed {
+    flex-grow: 1;
+    overflow-y: auto;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    padding: 1rem;
+    background: rgba(0,0,0,0.3);
+    border-radius: 16px;
+}
+
+/* Forge Specific overrides */
+.forge-overlay {
+    background: var(--forge-bg);
+}
+
+.habit-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+}
