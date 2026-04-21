@@ -11,6 +11,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;600;700&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Three.js for 3D Vision -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- D3.js for Habit Constellation -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <!-- Chart.js for Performance Pulse -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 <body>
     <canvas id="bg-canvas"></canvas>
@@ -20,6 +27,8 @@
             <a href="#how-it-works" style="color: var(--text-dim); text-decoration: none; font-weight: 600; font-size: 0.9rem;">Process</a>
             <a href="#modules" style="color: var(--text-dim); text-decoration: none; font-weight: 600; font-size: 0.9rem;">Modules</a>
             <a href="#use-cases" style="color: var(--text-dim); text-decoration: none; font-weight: 600; font-size: 0.9rem;">Capabilities</a>
+            <a href="#" id="launch-lab" class="btn btn-secondary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: hsla(var(--accent), 0.5); color: hsla(var(--accent), 1);">Zenith Growth Lab</a>
+            <a href="#" id="launch-forge" class="btn btn-secondary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: #bf9eff; color: #bf9eff;">Quantum Forge</a>
             <a href="#app-section" class="btn btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem;">Launch Console</a>
         </div>
     </nav>
@@ -233,7 +242,18 @@
                 <p id="processing-text" style="color: var(--text-dim); margin-top: 1.5rem; font-weight: 500; letter-spacing: 1px;">CALIBRATING PERSONAL MISSION...</p>
             </div>
 
+            <div id="history-section" class="card reveal" style="margin-top: 2rem; display: none; background: rgba(255,255,255,0.03);">
+                <div class="panel-header">
+                    <i data-lucide="history" style="width: 16px; color: hsla(var(--primary), 1);"></i>
+                    <h5 style="text-transform: uppercase; letter-spacing: 1px;">Recent Missions</h5>
+                </div>
+                <div id="mission-history-list" style="display: flex; flex-direction: column; gap: 0.5rem; padding: 1rem;">
+                    <!-- History items will be injected here -->
+                </div>
+            </div>
+
             <div class="output-grid" style="display: none;">
+
                 <div class="glass-panel">
                     <div class="panel-header">
                         <i data-lucide="terminal" style="width: 16px; color: hsla(var(--accent), 1);"></i>
@@ -284,6 +304,99 @@
             </div>
         </div>
     </section>
+
+    <!-- Zenith Growth Lab Overlay -->
+    <div id="lab-overlay" class="lab-overlay">
+        <div class="lab-header">
+            <div class="logo">ZENITH.LAB</div>
+            <button id="close-lab" class="btn-icon"><i data-lucide="x"></i></button>
+        </div>
+        
+        <div class="lab-content">
+            <div class="lab-sidebar">
+                <div class="lab-card reveal active">
+                    <div class="panel-header">
+                        <i data-lucide="activity" style="color: hsla(var(--accent), 1);"></i>
+                        <h5>Performance Pulse</h5>
+                    </div>
+                    <canvas id="growth-chart" style="max-height: 200px;"></canvas>
+                    <div id="lab-stats" class="lab-mini-stats">
+                        <!-- Stats injected here -->
+                    </div>
+                </div>
+                
+                <div class="lab-card reveal active" style="flex-grow: 1;">
+                    <div class="panel-header">
+                        <i data-lucide="binary" style="color: hsla(var(--primary), 1);"></i>
+                        <h5>Neural Reasoning Stream</h5>
+                    </div>
+                    <div id="reasoning-stream" class="reasoning-feed"></div>
+                </div>
+            </div>
+            
+            <div class="lab-main">
+                <div class="lab-card main-topology reveal active">
+                    <div class="panel-header">
+                        <i data-lucide="webhook" style="color: hsla(var(--accent), 1);"></i>
+                        <h5>Mission Topology (3D Vision)</h5>
+                    </div>
+                    <div id="topology-container" class="topology-canvas"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quantum Forge Overlay -->
+    <div id="forge-overlay" class="lab-overlay forge-overlay">
+        <div class="lab-header">
+            <div class="logo" style="background: linear-gradient(135deg, #fff, #bf9eff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">QUANTUM.FORGE</div>
+            <div style="display: flex; gap: 1rem;">
+                <button id="refresh-forge" class="btn-icon"><i data-lucide="refresh-cw"></i></button>
+                <button id="close-forge" class="btn-icon"><i data-lucide="x"></i></button>
+            </div>
+        </div>
+        
+        <div class="lab-content">
+            <div class="lab-sidebar">
+                <div class="lab-card reveal active" style="border-color: rgba(191, 158, 255, 0.3);">
+                    <div class="panel-header">
+                        <i data-lucide="zap" style="color: #bf9eff;"></i>
+                        <h5>Future Self Simulator</h5>
+                    </div>
+                    <div id="forge-prediction" class="document-view" style="max-height: 250px; font-size: 0.85rem; padding: 1.5rem;">
+                        Awaiting neural data to simulate your potential...
+                    </div>
+                </div>
+
+                <div class="lab-card reveal active" style="border-color: rgba(191, 158, 255, 0.3); flex-grow: 1;">
+                    <div class="panel-header">
+                        <i data-lucide="plus-circle" style="color: #bf9eff;"></i>
+                        <h5>Forge New Habit</h5>
+                    </div>
+                    <form id="new-habit-form" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
+                        <input type="text" id="habit-name" placeholder="Habit name (e.g. Morning Meditation)" required 
+                            style="background: rgba(0,0,0,0.4); border: 1px solid var(--border); padding: 0.8rem; border-radius: 8px; color: white;">
+                        <input type="text" id="habit-cue" placeholder="Trigger/Cue (e.g. After pouring coffee)" 
+                            style="background: rgba(0,0,0,0.4); border: 1px solid var(--border); padding: 0.8rem; border-radius: 8px; color: white;">
+                        <button type="submit" class="btn btn-primary" style="background: #bf9eff; box-shadow: 0 5px 15px rgba(191, 158, 255, 0.3); border: none;">ENGRAVE HABIT</button>
+                    </form>
+                    <div id="habit-active-list" style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; overflow-y: auto;">
+                        <!-- Habit list items -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="lab-main">
+                <div class="lab-card main-topology reveal active" style="border-color: rgba(191, 158, 255, 0.3);">
+                    <div class="panel-header">
+                        <i data-lucide="layout" style="color: #bf9eff;"></i>
+                        <h5>Habit Constellation (3D Mapping)</h5>
+                    </div>
+                    <div id="constellation-container" class="topology-canvas" style="background: radial-gradient(circle at center, rgba(191, 158, 255, 0.05) 0%, transparent 70%);"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <footer style="background: rgba(0,0,0,0.3); border-top: 1px solid var(--border); padding: 80px 10% 40px;">
         <div class="footer-grid">

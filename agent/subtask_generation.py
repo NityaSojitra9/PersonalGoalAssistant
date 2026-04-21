@@ -33,14 +33,30 @@ def classify_goal(goal):
         
     return "general", None
 
-def generate_subtasks(user_goal):
+def generate_subtasks(user_goal, intensity='balanced'):
     category, subcategory = classify_goal(user_goal)
     
     # HYBRID RETRIEVAL: Check Expert Knowledge Base first
     expert_plan = get_expert_plan(category, subcategory)
     if expert_plan:
         print(f"[*] EKB Match Found: Using expert blueprint for {category}/{subcategory}")
+        # Slice expert plan if intensity is blitz
+        if intensity == 'blitz':
+            return expert_plan[:4]
+        elif intensity == 'mastery':
+            # Append deep-work steps for mastery
+            return expert_plan + [
+                "Conduct a 360-degree review of all mission deliverables.",
+                "Establish a long-term sustainability framework for this objective."
+            ]
         return expert_plan
+
+    # intensity logic for prompting
+    intensity_guidance = {
+        'blitz': "Focus: High speed, minimal overhead. Output 3-5 critical steps only.",
+        'balanced': "Focus: Well-rounded progression. Output 6-8 comprehensive steps.",
+        'mastery': "Focus: Deep expertise and long-term excellence. Output 10-12 granular, high-intensity steps."
+    }
 
     # If no expert plan, fallback to AI generation with strict Action-Only filters
     templates = {
@@ -53,11 +69,13 @@ def generate_subtasks(user_goal):
 
     prompt = (
         "Role: Professional Action Planner\n"
+        f"Intensity Context: {intensity_guidance.get(intensity, intensity_guidance['balanced'])}\n"
         "Restriction: Output ONLY specific actionable steps. No advice. No meta-planning.\n"
         f"{templates.get(category, templates['general'])}"
         f"Goal: {user_goal}\n"
         "Actionable Steps:\n1."
     )
+
     
     gpt3_pipeline = pipeline('text-generation', model=model, tokenizer=tokenizer, device='cpu')
     output = gpt3_pipeline(prompt, max_new_tokens=200, do_sample=True, temperature=0.7, repetition_penalty=1.5, pad_token_id=tokenizer.eos_token_id)[0]['generated_text']
