@@ -1,90 +1,116 @@
+"""
+server.py
+Main entry point for the Personal Goal Assistant Flask Backend.
+Provides RESTful endpoints for mission planning, execution tracking, and analytics.
+"""
+
 import os
 import sys
-from flask import Flask, request, jsonify
+from datetime import datetime
+from typing import Tuple, Dict, Any, List
+
+from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 
-# Add project root to sys.path to allow importing from agent, models, etc.
+# Project Path Calibration
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if project_root not in sys.path:
     sys.path.append(project_root)
 
-# Import agent logic
+# Internal Imports
 from agent.subtask_generation import generate_subtasks
 from agent.task_execution import perform_subtask
-
-app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
-
-# Database Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///goals.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 from backend.models import db, Mission, Subtask, Habit, HabitLog
-db.init_app(app)
 
-# Ensure database tables are created
-with app.app_context():
-    db.create_all()
+def create_app() -> Flask:
+    """
+    Application factory for the Flask server.
+    """
+    app = Flask(__name__)
+    CORS(app)
 
+    # Configuration
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///goals.db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    db.init_app(app)
+
+    with app.app_context():
+        db.create_all()
+
+    return app
+
+app = create_app()
 
 @app.route('/run', methods=['POST'])
-def run_agent():
-    if request.is_json:
-        data = request.get_json()
-        goal = data.get('goal')
-        intensity = data.get('intensity', 'balanced')
-    else:
-        goal = request.form.get('goal')
-        intensity = request.form.get('intensity', 'balanced')
+def run_agent() -> Tuple[Response, int]:
+    """
+    Initiates the RL agent to plan and execute a goal.
+    Returns:
+        JSON response with mission details and agent logs.
+    """
+    try:
+        if request.is_json:
+            data = request.get_json()
+            goal = data.get('goal')
+            intensity = data.get('intensity', 'balanced')
+        else:
+            goal = request.form.get('goal')
+            intensity = request.form.get('intensity', 'balanced')
 
-    if not goal:
-        return jsonify({'error': 'No goal provided'}), 400
+        if not goal:
+            return jsonify({'error': 'No goal provided'}), 400
 
-    print(f"[*] Starting agent with goal: {goal} [Intensity: {intensity}]")
+        print(f"[*] Dispatching mission: {goal} [Intensity: {intensity}]")
 
-    # Save Mission to DB
-    new_mission = Mission(goal=goal, intensity=intensity)
-    db.session.add(new_mission)
-    db.session.commit()
+        # Persistence Sequence
+        new_mission = Mission(goal=goal, intensity=intensity)
+        db.session.add(new_mission)
+        db.session.commit()
 
-    # Generate subtasks
-    subtasks = generate_subtasks(goal, intensity=intensity)
+        # Strategic planning via agent
+        subtasks_text = generate_subtasks(goal, intensity=intensity)
 
-    # Execute the subtasks & Save to DB
-    agent_output = []
-    for index, task_text in enumerate(subtasks, start=1):
-        # Save Subtask to DB
-        st = Subtask(mission_id=new_mission.id, text=task_text, order=index)
-        db.session.add(st)
+        # Execution Sequence
+        agent_output = []
+        for index, task_text in enumerate(subtasks_text, start=1):
+            st = Subtask(mission_id=new_mission.id, text=task_text, order=index)
+            db.session.add(st)
+            
+            # Simulated RL Execution
+            status = perform_subtask(task_text)
+            agent_output.append({
+                'step': index,
+                'action': task_text,
+                'status': status
+            })
         
-        status = perform_subtask(task_text)
-        agent_output.append({
-            'step': index,
-            'action': task_text,
-            'status': status
-        })
-    
-    db.session.commit()
+        db.session.commit()
 
-    # Re-fetch or use to_dict to get IDs
-    mission_data = new_mission.to_dict()
+        return jsonify({
+            'mission_id': new_mission.id,
+            'result': f'Strategic objectives for "{goal}" crystallized.',
+            'agent_output': agent_output,
+            'subtasks': new_mission.to_dict()['subtasks']
+        }), 200
 
-    response = {
-        'mission_id': new_mission.id,
-        'result': f'Strategic objectives for "{goal}" have been materialized in the Mission Report.',
-        'agent_output': agent_output,
-        'subtasks': mission_data['subtasks']
-    }
-    return jsonify(response)
-
+    except Exception as e:
+        print(f"[!] Critical core error: {str(e)}")
+        return jsonify({'error': 'Neural Link Failure', 'details': str(e)}), 500
 
 @app.route('/missions', methods=['GET'])
-def get_missions():
+def get_missions() -> Response:
+    """
+    Retrieves historical mission telemetry.
+    """
     missions = Mission.query.order_by(Mission.timestamp.desc()).all()
     return jsonify([m.to_dict() for m in missions])
 
 @app.route('/subtasks/<int:subtask_id>', methods=['PATCH'])
-def update_subtask(subtask_id):
+def update_subtask(subtask_id: int) -> Response:
+    """
+    Updates the completion state of a specific subtask.
+    """
     data = request.get_json()
     subtask = Subtask.query.get_or_404(subtask_id)
     
@@ -94,42 +120,40 @@ def update_subtask(subtask_id):
     db.session.commit()
     return jsonify({'success': True, 'subtask': subtask.to_dict()})
 
-
 @app.route('/analytics/stats', methods=['GET'])
-def get_analytics_stats():
-    total_missions = Mission.query.count()
-    completed_missions = Mission.query.filter_by(is_completed=True).count()
+def get_analytics_stats() -> Response:
+    """
+    Aggregates performance metrics across all missions.
+    """
+    total = Mission.query.count()
+    completed = Mission.query.filter_by(is_completed=True).count()
     
-    # Success rate calculation
-    success_rate = (completed_missions / total_missions * 100) if total_missions > 0 else 0
-    
-    # Intensity distribution
-    blitz_count = Mission.query.filter_by(intensity='blitz').count()
-    balanced_count = Mission.query.filter_by(intensity='balanced').count()
-    mastery_count = Mission.query.filter_by(intensity='mastery').count()
+    success_rate = (completed / total * 100) if total > 0 else 0
     
     return jsonify({
-        'totalMissions': total_missions,
-        'completedMissions': completed_missions,
+        'totalMissions': total,
+        'completedMissions': completed,
         'successRate': round(success_rate, 1),
         'distribution': {
-            'blitz': blitz_count,
-            'balanced': balanced_count,
-            'mastery': mastery_count
+            'blitz': Mission.query.filter_by(intensity='blitz').count(),
+            'balanced': Mission.query.filter_by(intensity='balanced').count(),
+            'mastery': Mission.query.filter_by(intensity='mastery').count()
         }
     })
 
 @app.route('/analytics/topology', methods=['GET'])
-def get_topology():
-    # Fetch recent missions and their subtasks to build a graph structure
+def get_topology() -> Response:
+    """
+    Generates a graph-based representation of mission networks.
+    """
     missions = Mission.query.order_by(Mission.timestamp.desc()).limit(10).all()
     nodes = []
     links = []
     
-    for i, m in enumerate(missions):
-        mission_node_id = f"m_{m.id}"
+    for m in missions:
+        m_id = f"m_{m.id}"
         nodes.append({
-            'id': mission_node_id,
+            'id': m_id,
             'label': m.goal,
             'type': 'mission',
             'intensity': m.intensity,
@@ -137,89 +161,33 @@ def get_topology():
         })
         
         for st in m.subtasks:
-            st_node_id = f"st_{st.id}"
-            nodes.append({
-                'id': st_node_id,
-                'label': st.text,
-                'type': 'subtask',
-                'completed': st.is_completed
-            })
-            links.append({
-                'source': mission_node_id,
-                'target': st_node_id
-            })
+            st_id = f"st_{st.id}"
+            nodes.append({'id': st_id, 'label': st.text, 'type': 'subtask', 'completed': st.is_completed})
+            links.append({'source': m_id, 'target': st_id})
             
     return jsonify({'nodes': nodes, 'links': links})
 
 @app.route('/health', methods=['GET'])
-def health_check():
-    return jsonify({'status': 'healthy', 'message': 'Personal Goal Assistant API is running'})
+def health_check() -> Response:
+    """
+    System health diagnostics.
+    """
+    return jsonify({'status': 'healthy', 'message': 'API v2.1.0 Operational'})
 
-# --- Quantum Forge Endpoints ---
+# --- Quantum Forge (Optional/Extensible Modules) ---
 
 @app.route('/forge/habits', methods=['GET', 'POST'])
-def handle_habits():
-
-    if request.method == 'GET':
-        habits = Habit.query.all()
-        return jsonify([h.to_dict() for h in habits])
-    
+def handle_habits() -> Response:
     if request.method == 'POST':
         data = request.json
-        new_habit = Habit(
-            name=data.get('name'),
-            cue=data.get('cue'),
-            reward=data.get('reward'),
-            frequency=data.get('frequency', 'daily')
-        )
+        new_habit = Habit(name=data.get('name'), cue=data.get('cue'), frequency=data.get('frequency', 'daily'))
         db.session.add(new_habit)
         db.session.commit()
         return jsonify({'success': True, 'habit': new_habit.to_dict()})
-
-@app.route('/forge/log', methods=['POST'])
-def log_habit():
-    data = request.json
-    habit_id = data.get('habit_id')
-    status = data.get('status', 'completed')
     
-    log = HabitLog(habit_id=habit_id, status=status)
-    db.session.add(log)
-    db.session.commit()
-    return jsonify({'success': True, 'log': log.to_dict()})
-
-@app.route('/forge/predict', methods=['GET'])
-def predict_future():
-    # Sophisticated projection logic: 
-    # Analyzes habit consistency over the last 30 days and projects outcomes
-    habits = Habit.query.all()
-    projections = []
-    
-    for h in habits:
-        consistency = len(h.logs) / max(1, (datetime.utcnow() - h.created_at).days)
-        consistency = min(1.0, consistency)
-        
-        # Identity-based personas based on consistency
-        persona = "The Novice"
-        if consistency > 0.8: persona = "The Master Architect"
-        elif consistency > 0.5: persona = "The Dedicated Striver"
-        
-        projections.append({
-            'habit': h.name,
-            'consistency': round(consistency * 100, 1),
-            'persona': persona,
-            'prediction30Days': f"You will have solidified the '{h.name}' foundation.",
-            'prediction365Days': f"The '{h.name}' behavior will be fully autonomous, defining your new identity."
-        })
-        
-    return jsonify({
-        'overallStanding': 'Resilient' if len(projections) > 0 else 'Initial Stage',
-        'projections': projections
-    })
-
+    return jsonify([h.to_dict() for h in Habit.query.all()])
 
 if __name__ == '__main__':
-
-    # Default port 5000
     port = int(os.environ.get('PORT', 5000))
-    print(f"[*] Backend server starting on port {port}...")
+    print(f"[*] Life Engine online (Vite Proxy: http://localhost:{port})")
     app.run(host='0.0.0.0', port=port, debug=True)
