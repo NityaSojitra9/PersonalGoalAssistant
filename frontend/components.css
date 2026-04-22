@@ -62,19 +62,81 @@
   background: var(--panel-bg);
   backdrop-filter: var(--glass);
   border: 1px solid var(--border);
-  border-radius: 24px;
-  padding: 3rem;
+  border-radius: 16px;
+  padding: 2.5rem;
   margin-bottom: 2rem;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 .glass-panel {
-  background: rgba(13, 17, 23, 0.4);
+  background: rgba(13, 17, 23, 0.3);
+  backdrop-filter: var(--glass);
   border: 1px solid var(--border);
-  border-radius: 20px;
+  border-radius: 16px;
   padding: 1.5rem;
   height: 400px;
   display: flex;
   flex-direction: column;
+}
+
+/* Landing Page Section Cards */
+.process-grid, .features, .use-cases-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.feature-card, .use-case-card, .process-step {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: left;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.feature-card:hover, .use-case-card:hover, .process-step:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-5px);
+  border-color: hsla(var(--accent), 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.feature-icon, .use-case-img {
+  width: 50px;
+  height: 50px;
+  background: hsla(var(--primary), 0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: hsla(var(--primary), 1);
+  margin-bottom: 0.5rem;
+}
+
+.use-case-card {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.step-number {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: hsla(var(--accent), 1);
+  background: hsla(var(--accent), 0.1);
+  padding: 0.25rem 0.75rem;
+  border-radius: 100px;
+  width: fit-content;
 }
 
 .panel-header {
@@ -175,3 +237,160 @@ input[type="text"]:focus {
   margin: 0 auto;
   animation: spin 1s cubic-bezier(0.5, 0.1, 0.4, 0.9) infinite;
 }
+/* Persona Selector */
+.persona-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+.persona-option {
+    cursor: pointer;
+    position: relative;
+}
+
+.persona-option input {
+    display: none;
+}
+
+.persona-box {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: center;
+}
+
+.persona-box i {
+    width: 20px;
+    height: 20px;
+    color: var(--text-dim);
+    transition: all 0.3s ease;
+}
+
+.persona-box span {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+}
+
+.persona-option:hover .persona-box {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.persona-option input:checked + .persona-box {
+    background: hsla(var(--primary), 0.1);
+    border-color: hsla(var(--primary), 1);
+    box-shadow: 0 0 15px hsla(var(--primary), 0.2);
+}
+
+.persona-option input:checked + .persona-box i {
+    color: hsla(var(--primary), 1);
+}
+
+.persona-option input:checked + .persona-box span {
+    color: white;
+}
+
+@media (min-width: 600px) {
+    .persona-options {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* App Grid & Mastery Widget */
+.app-grid {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.mastery-rank-box {
+    text-align: center;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: 1rem;
+}
+
+.rank-name {
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: white;
+    text-shadow: 0 0 15px hsla(var(--accent), 0.5);
+    letter-spacing: 1px;
+}
+
+.rank-label {
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    margin-top: 0.5rem;
+}
+
+.xp-stats {
+    margin-top: 2rem;
+}
+
+.xp-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.level-badge {
+    background: hsla(var(--primary), 1);
+    color: black;
+    padding: 0.25rem 0.75rem;
+    border-radius: 100px;
+    font-weight: 900;
+    font-size: 0.75rem;
+}
+
+.xp-count {
+    font-weight: 700;
+    color: white;
+    font-size: 0.85rem;
+}
+
+.xp-bar-bg {
+    background: rgba(255, 255, 255, 0.05);
+    height: 10px;
+    border-radius: 100px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.xp-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(to right, hsla(var(--primary), 1), hsla(var(--accent), 1));
+    box-shadow: 0 0 15px hsla(var(--accent), 0.4);
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.xp-footer {
+    margin-top: 0.75rem;
+    text-align: right;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    font-style: italic;
+}
+
+@media (max-width: 1000px) {
+    .app-grid {
+        grid-template-columns: 1fr;
+    }
+}
+

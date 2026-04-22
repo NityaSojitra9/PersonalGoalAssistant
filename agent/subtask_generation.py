@@ -33,7 +33,7 @@ def classify_goal(goal):
         
     return "general", None
 
-def generate_subtasks(user_goal, intensity='balanced'):
+def generate_subtasks(user_goal, intensity='balanced', persona='strategist'):
     category, subcategory = classify_goal(user_goal)
     
     # HYBRID RETRIEVAL: Check Expert Knowledge Base first
@@ -50,6 +50,32 @@ def generate_subtasks(user_goal, intensity='balanced'):
                 "Establish a long-term sustainability framework for this objective."
             ]
         return expert_plan
+
+    # Persona guidance for the system prompt
+    persona_profiles = {
+        'strategist': {
+            'role': "Logical Strategist",
+            'voice': "professional, efficient, and objective",
+            'focus': "maximizing probability of success through logic"
+        },
+        'sergeant': {
+            'role': "Elite Drill Sergeant",
+            'voice': "commanding, direct, and high-intensity",
+            'focus': "raw action, discipline, and immediate execution"
+        },
+        'zen': {
+            'role': "Mindful Sensei",
+            'voice': "calm, balanced, and sustainable",
+            'focus': "flow, mental readiness, and long-term well-being"
+        },
+        'optimizer': {
+            'role': "Growth Hacker",
+            'voice': "data-driven, innovative, and opportunistic",
+            'focus': "finding leverage points and unconventional shortcuts"
+        }
+    }
+
+    profile = persona_profiles.get(persona, persona_profiles['strategist'])
 
     # intensity logic for prompting
     intensity_guidance = {
@@ -68,7 +94,9 @@ def generate_subtasks(user_goal, intensity='balanced'):
     }
 
     prompt = (
-        "Role: Professional Action Planner\n"
+        f"Role: {profile['role']}\n"
+        f"Voice: Speak in a {profile['voice']} tone.\n"
+        f"Mission Focus: {profile['focus']}.\n"
         f"Intensity Context: {intensity_guidance.get(intensity, intensity_guidance['balanced'])}\n"
         "Restriction: Output ONLY specific actionable steps. No advice. No meta-planning.\n"
         f"{templates.get(category, templates['general'])}"

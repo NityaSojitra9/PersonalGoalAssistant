@@ -35,7 +35,12 @@ class AppController {
             historySection: document.getElementById('history-section'),
             historyList: document.getElementById('mission-history-list'),
             goalInput: document.getElementById('goal'),
-            backendUrlInput: document.getElementById('backend-url')
+            backendUrlInput: document.getElementById('backend-url'),
+            userRank: document.getElementById('user-rank'),
+            userLevel: document.getElementById('user-level'),
+            userXp: document.getElementById('user-xp'),
+            xpBarFill: document.getElementById('xp-bar-fill'),
+            xpToNext: document.getElementById('xp-to-next')
         };
 
         this.init();
@@ -50,6 +55,7 @@ class AppController {
         this.setupEventListeners();
         this.setupZenith();
         this.loadMissions();
+        this.loadUserStats();
         
         // Initialize supporting modules
         new Background3D();
@@ -115,6 +121,7 @@ class AppController {
         
         const goal = this.dom.goalInput.value;
         const intensity = document.querySelector('input[name="intensity"]:checked').value;
+        const persona = document.querySelector('input[name="persona"]:checked').value;
         let backendUrl = this.dom.backendUrlInput.value;
         if (backendUrl.endsWith('/')) backendUrl = backendUrl.slice(0, -1);
 
@@ -124,7 +131,7 @@ class AppController {
             const response = await fetch(`${backendUrl}/run`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ goal, intensity }),
+                body: JSON.stringify({ goal, intensity, persona }),
             });
 
             if (!response.ok) throw new Error(`Network status error: ${response.status}`);
@@ -284,12 +291,64 @@ class AppController {
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ is_completed: isChecked })
                     });
+                    const data = await response.json();
+                    if (data.userStats) {
+                        this.updateMasteryUI(data.userStats);
+                    }
                     this.updateProgress();
                 } catch (err) {
                     console.error("Failed to sync subtask state:", err);
                 }
             });
         });
+    }
+
+    /**
+     * Fetches current mastery statistics from the backend.
+     */
+    async loadUserStats() {
+        let backendUrl = this.dom.backendUrlInput.value;
+        if (backendUrl.endsWith('/')) backendUrl = backendUrl.slice(0, -1);
+        
+        try {
+            const response = await fetch(`${backendUrl}/user/stats`);
+            if (!response.ok) return;
+            const stats = await response.json();
+            this.updateMasteryUI(stats);
+        } catch (err) {
+            console.warn("Mastery synchronization bypassed.");
+        }
+    }
+
+    /**
+     * Updates the mastery widget with new stats.
+     * @param {Object} stats 
+     */
+    updateMasteryUI(stats) {
+        this.dom.userRank.textContent = stats.rank;
+        this.dom.userLevel.textContent = stats.level;
+        this.dom.userXp.textContent = stats.xp.toLocaleString();
+        
+        // Calculate progress to next level
+        const currentLevelXp = ((stats.level - 1) ** 2) * 100;
+        const nextLevelXp = stats.nextLevelXp;
+        const progressInLevel = stats.xp - currentLevelXp;
+        const totalInLevel = nextLevelXp - currentLevelXp;
+        
+        const percentage = Math.min(Math.max((progressInLevel / totalInLevel) * 100, 0), 100);
+        this.dom.xpBarFill.style.width = `${percentage}%`;
+        
+        const remaining = nextLevelXp - stats.xp;
+        this.dom.xpToNext.textContent = `${remaining.toLocaleString()} XP to next level`;
+
+        // Rank-based color updates
+        const rankColors = {
+            "Novice Explorer": "hsla(var(--primary), 1)",
+            "Strategic Architect": "hsla(var(--accent), 1)",
+            "Mission Commander": "#ffcc00",
+            "Silicon Overlord": "#ff3366"
+        };
+        this.dom.userRank.style.color = rankColors[stats.rank] || "white";
     }
 
     /**
