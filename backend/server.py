@@ -20,7 +20,7 @@ if project_root not in sys.path:
 # Internal Imports
 from agent.subtask_generation import generate_subtasks
 from agent.task_execution import perform_subtask
-from backend.models import db, Mission, Subtask, Habit, HabitLog
+from backend.models import db, Mission, Subtask, Habit, HabitLog, UserStats
 
 def create_app() -> Flask:
     """
@@ -54,14 +54,16 @@ def run_agent() -> Tuple[Response, int]:
             data = request.get_json()
             goal = data.get('goal')
             intensity = data.get('intensity', 'balanced')
+            persona = data.get('persona', 'strategist')
         else:
             goal = request.form.get('goal')
             intensity = request.form.get('intensity', 'balanced')
+            persona = request.form.get('persona', 'strategist')
 
         if not goal:
             return jsonify({'error': 'No goal provided'}), 400
 
-        print(f"[*] Dispatching mission: {goal} [Intensity: {intensity}]")
+        print(f"[*] Dispatching mission: {goal} [Intensity: {intensity}, Persona: {persona}]")
 
         # Persistence Sequence
         new_mission = Mission(goal=goal, intensity=intensity)
@@ -69,7 +71,7 @@ def run_agent() -> Tuple[Response, int]:
         db.session.commit()
 
         # Strategic planning via agent
-        subtasks_text = generate_subtasks(goal, intensity=intensity)
+        subtasks_text = generate_subtasks(goal, intensity=intensity, persona=persona)
 
         # Execution Sequence
         agent_output = []
@@ -106,19 +108,47 @@ def get_missions() -> Response:
     missions = Mission.query.order_by(Mission.timestamp.desc()).all()
     return jsonify([m.to_dict() for m in missions])
 
+def award_xp(amount: int):
+    """Awards XP to the user, creating the stats record if it doesn't exist."""
+    stats = UserStats.query.first()
+    if not stats:
+        stats = UserStats(xp=0)
+        db.session.add(stats)
+    stats.xp += amount
+    db.session.commit()
+
+@app.route('/user/stats', methods=['GET'])
+def get_user_stats() -> Response:
+    """Retrieves current mastery stats."""
+    stats = UserStats.query.first()
+    if not stats:
+        stats = UserStats(xp=0)
+        db.session.add(stats)
+        db.session.commit()
+    return jsonify(stats.to_dict())
+
 @app.route('/subtasks/<int:subtask_id>', methods=['PATCH'])
 def update_subtask(subtask_id: int) -> Response:
     """
-    Updates the completion state of a specific subtask.
+    Updates the completion state of a specific subtask and awards XP.
     """
     data = request.get_json()
     subtask = Subtask.query.get_or_404(subtask_id)
     
     if 'is_completed' in data:
+        was_completed = subtask.is_completed
         subtask.is_completed = data['is_completed']
+        
+        # Award XP if transitioning from Incomplete to Complete
+        if not was_completed and subtask.is_completed:
+            award_xp(50)
     
     db.session.commit()
-    return jsonify({'success': True, 'subtask': subtask.to_dict()})
+    return jsonify({
+        'success': True, 
+        'subtask': subtask.to_dict(),
+        'userStats': UserStats.query.first().to_dict()
+    })
 
 @app.route('/analytics/stats', methods=['GET'])
 def get_analytics_stats() -> Response:

@@ -107,3 +107,33 @@ class HabitLog(db.Model):
             'timestamp': self.timestamp.isoformat(),
             'status': self.status
         }
+class UserStats(db.Model):
+    """
+    Tracks the user's gamified progress: XP, Level, and Rank.
+    """
+    __tablename__ = 'user_stats'
+    id = db.Column(db.Integer, primary_key=True)
+    xp = db.Column(db.Integer, default=0)
+    
+    @property
+    def level(self) -> int:
+        # Level 1 = 0 XP, Level 2 = 100 XP, Level 3 = 400 XP... (Level = floor(sqrt(xp/100)) + 1)
+        import math
+        return math.floor(math.sqrt(self.xp / 100)) + 1 if self.xp > 0 else 1
+
+    @property
+    def rank(self) -> str:
+        lvl = self.level
+        if lvl < 5: return "Novice Explorer"
+        if lvl < 15: return "Strategic Architect"
+        if lvl < 30: return "Mission Commander"
+        if lvl < 50: return "Silicon Overlord"
+        return "Transcendental Being"
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            'xp': self.xp,
+            'level': self.level,
+            'rank': self.rank,
+            'nextLevelXp': (self.level ** 2) * 100
+        }
