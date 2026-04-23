@@ -35,6 +35,9 @@
             <a href="#use-cases" aria-label="See use cases" style="color: var(--text-dim); text-decoration: none; font-weight: 600; font-size: 0.9rem;">Capabilities</a>
             <a href="#" id="launch-lab" class="btn btn-secondary" aria-label="Launch Zenith Growth Lab" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: hsla(var(--accent), 0.5); color: hsla(var(--accent), 1);">Zenith Growth Lab</a>
             <a href="#" id="launch-forge" class="btn btn-secondary" aria-label="Launch Quantum Forge" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: #bf9eff; color: #bf9eff;">Quantum Forge</a>
+            <a href="#" id="launch-aura" class="btn btn-secondary" aria-label="Launch Aura Nexus" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: #00d2ff; color: #00d2ff;">Aura Nexus</a>
+            <a href="#" id="launch-archive" class="btn btn-secondary" aria-label="Launch Neural Archive" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: #bf9eff; color: #bf9eff;">Neural Archive</a>
+            <a href="#" id="launch-chronos" class="btn btn-secondary" aria-label="Launch Chronos Engine" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: #00d2ff; color: #00d2ff;">Chronos Engine</a>
             <a href="#app-section" class="btn btn-primary" aria-label="Launch Console" style="padding: 0.6rem 1.2rem; font-size: 0.8rem;">Launch Console</a>
         </div>
     </nav>
@@ -375,12 +378,20 @@
         </div>
     </section>
 
-    <!-- Zenith Growth Lab Overlay -->
     <div id="lab-overlay" class="lab-overlay">
-        <div class="lab-header">
+        <nav class="overlay-nav">
             <div class="logo">ZENITH.LAB</div>
-            <button id="close-lab" class="btn-icon"><i data-lucide="x"></i></button>
-        </div>
+            <div class="nav-links" style="display: flex; gap: 2rem; align-items: center;">
+                <a href="#how-it-works" class="overlay-close-link" style="color: var(--text-dim); text-decoration: none; font-weight: 600; font-size: 0.9rem;">Process</a>
+                <a href="#modules" class="overlay-close-link" style="color: var(--text-dim); text-decoration: none; font-weight: 600; font-size: 0.9rem;">Modules</a>
+                <a href="#" id="nav-launch-lab" class="btn btn-secondary active" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: hsla(var(--accent), 0.5); color: hsla(var(--accent), 1);">Zenith Growth Lab</a>
+                <a href="#" id="nav-launch-forge" class="btn btn-secondary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: #bf9eff; color: #bf9eff;">Quantum Forge</a>
+                <a href="#" id="nav-launch-aura" class="btn btn-secondary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: #00d2ff; color: #00d2ff;">Aura Nexus</a>
+                <a href="#" id="nav-launch-archive" class="btn btn-secondary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: #bf9eff; color: #bf9eff;">Neural Archive</a>
+                <a href="#" id="nav-launch-chronos" class="btn btn-secondary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: #00d2ff; color: #00d2ff;">Chronos Engine</a>
+                <button id="close-lab" class="btn-icon"><i data-lucide="x"></i></button>
+            </div>
+        </nav>
         
         <div class="lab-content zenith-grid">
             <!-- Left Column: Telemetry -->
@@ -432,15 +443,20 @@
         </div>
     </div>
 
-    <!-- Quantum Forge Overlay -->
     <div id="forge-overlay" class="lab-overlay forge-overlay">
-        <div class="lab-header">
+        <nav class="overlay-nav">
             <div class="logo" style="background: linear-gradient(135deg, #fff, #bf9eff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">QUANTUM.FORGE</div>
-            <div style="display: flex; gap: 1rem;">
-                <button id="refresh-forge" class="btn-icon"><i data-lucide="refresh-cw"></i></button>
+            <div class="nav-links" style="display: flex; gap: 2rem; align-items: center;">
+                <a href="#how-it-works" class="overlay-close-link" style="color: var(--text-dim); text-decoration: none; font-weight: 600; font-size: 0.9rem;">Process</a>
+                <a href="#modules" class="overlay-close-link" style="color: var(--text-dim); text-decoration: none; font-weight: 600; font-size: 0.9rem;">Modules</a>
+                <a href="#" id="forge-nav-launch-lab" class="btn btn-secondary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: hsla(var(--accent), 0.5); color: hsla(var(--accent), 1);">Zenith Growth Lab</a>
+                <a href="#" id="forge-nav-launch-forge" class="btn btn-secondary active" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: #bf9eff; color: #bf9eff;">Quantum Forge</a>
+                <a href="#" id="forge-nav-launch-aura" class="btn btn-secondary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: #00d2ff; color: #00d2ff;">Aura Nexus</a>
+                <a href="#" id="forge-nav-launch-archive" class="btn btn-secondary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: #bf9eff; color: #bf9eff;">Neural Archive</a>
+                <a href="#" id="forge-nav-launch-chronos" class="btn btn-secondary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: #00d2ff; color: #00d2ff;">Chronos Engine</a>
                 <button id="close-forge" class="btn-icon"><i data-lucide="x"></i></button>
             </div>
-        </div>
+        </nav>
         
         <div class="lab-content forge-grid">
             <!-- Top Half: 3D Constellation -->
@@ -484,6 +500,120 @@
                     </form>
                     <div id="habit-active-list" class="habit-list-container" style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; overflow-y: auto; max-height: 200px;">
                         <!-- Habit list items -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="aura-overlay" class="lab-overlay aura-overlay">
+        <nav class="overlay-nav">
+            <div class="logo" style="background: linear-gradient(135deg, #fff, #00d2ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">AURA.NEXUS</div>
+            <div class="nav-links" style="display: flex; gap: 2rem; align-items: center;">
+                <a href="#how-it-works" class="overlay-close-link" style="color: var(--text-dim); text-decoration: none; font-weight: 600; font-size: 0.9rem;">Process</a>
+                <a href="#modules" class="overlay-close-link" style="color: var(--text-dim); text-decoration: none; font-weight: 600; font-size: 0.9rem;">Modules</a>
+                <a href="#" id="aura-nav-launch-lab" class="btn btn-secondary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: hsla(var(--accent), 0.5); color: hsla(var(--accent), 1);">Zenith Growth Lab</a>
+                <a href="#" id="aura-nav-launch-forge" class="btn btn-secondary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: #bf9eff; color: #bf9eff;">Quantum Forge</a>
+                <a href="#" id="aura-nav-launch-aura" class="btn btn-secondary active" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: #00d2ff; color: #00d2ff;">Aura Nexus</a>
+                <a href="#" id="aura-nav-launch-archive" class="btn btn-secondary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: #bf9eff; color: #bf9eff;">Neural Archive</a>
+                <a href="#" id="aura-nav-launch-chronos" class="btn btn-secondary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: #00d2ff; color: #00d2ff;">Chronos Engine</a>
+                <button id="close-aura" class="btn-icon"><i data-lucide="x"></i></button>
+            </div>
+        </nav>
+        
+        <div class="aura-grid">
+            <div class="aura-visual-panel">
+                <div id="aura-canvas-container" class="aura-canvas"></div>
+            </div>
+            
+            <div class="aura-content-panel">
+                <div class="lab-card aura-card reveal active">
+                    <div class="panel-header">
+                        <i data-lucide="sparkles" style="color: #00d2ff;"></i>
+                        <h5>Personality Signature</h5>
+                    </div>
+                    <div class="aura-type-display">
+                        <h2 id="aura-type-label">CALIBRATING...</h2>
+                        <p id="aura-info-text">Analyzing mission telemetry to define your cognitive aura...</p>
+                    </div>
+                    
+                    <div id="aura-stats-grid" class="aura-stats-container">
+                        <!-- Stats injected here -->
+                    </div>
+                </div>
+
+                <div class="lab-card reveal active" style="margin-top: 2rem; border-color: rgba(0, 210, 255, 0.2);">
+                    <div class="panel-header">
+                        <i data-lucide="info" style="color: #00d2ff;"></i>
+                        <h5>Aura Evolution</h5>
+                    </div>
+                    <p style="font-size: 0.8rem; color: var(--text-dim); line-height: 1.6;">Your aura is a dynamic reflection of your behavioral patterns. By shifting your mission intensity, you can reshape your cognitive signature over time.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Neural Archive Overlay -->
+    <div id="archive-overlay" class="lab-overlay archive-overlay">
+        <nav class="overlay-nav">
+            <div class="logo" style="background: linear-gradient(135deg, #fff, #bf9eff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">NEURAL.ARCHIVE</div>
+            <div class="nav-links" style="display: flex; gap: 2rem; align-items: center;">
+                <a href="#how-it-works" class="overlay-close-link" style="color: var(--text-dim); text-decoration: none; font-weight: 600; font-size: 0.9rem;">Process</a>
+                <a href="#" id="archive-nav-launch-lab" class="btn btn-secondary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: hsla(var(--accent), 0.5); color: hsla(var(--accent), 1);">Zenith Growth Lab</a>
+                <a href="#" id="archive-nav-launch-forge" class="btn btn-secondary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: #bf9eff; color: #bf9eff;">Quantum Forge</a>
+                <a href="#" id="archive-nav-launch-aura" class="btn btn-secondary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: #00d2ff; color: #00d2ff;">Aura Nexus</a>
+                <a href="#" id="archive-nav-launch-archive" class="btn btn-secondary active" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: #bf9eff; color: #bf9eff;">Neural Archive</a>
+                <a href="#" id="archive-nav-launch-chronos" class="btn btn-secondary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: #00d2ff; color: #00d2ff;">Chronos Engine</a>
+                <button id="close-archive" class="btn-icon"><i data-lucide="x"></i></button>
+            </div>
+        </nav>
+        <div class="archive-grid">
+            <div class="archive-visual-panel">
+                <div id="archive-canvas-container" class="archive-canvas"></div>
+            </div>
+            <div class="archive-content-panel">
+                <div class="lab-card archive-detail-card reveal active">
+                    <div class="panel-header">
+                        <i data-lucide="database" style="color: #bf9eff;"></i>
+                        <h5>Expert Milestone Details</h5>
+                    </div>
+                    <div id="knowledge-detail-content" class="knowledge-view">
+                        <div class="knowledge-intro">
+                            <h5>Expert Knowledge Base</h5>
+                            <p>Neural Archive online. Select a node in the 3D graph to extract expert mission blueprints.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chronos Engine Overlay -->
+    <div id="chronos-overlay" class="lab-overlay chronos-overlay">
+        <nav class="overlay-nav">
+            <div class="logo" style="background: linear-gradient(135deg, #fff, #00d2ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">CHRONOS.ENGINE</div>
+            <div class="nav-links" style="display: flex; gap: 2rem; align-items: center;">
+                <a href="#how-it-works" class="overlay-close-link" style="color: var(--text-dim); text-decoration: none; font-weight: 600; font-size: 0.9rem;">Process</a>
+                <a href="#" id="chronos-nav-launch-lab" class="btn btn-secondary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: hsla(var(--accent), 0.5); color: hsla(var(--accent), 1);">Zenith Growth Lab</a>
+                <a href="#" id="chronos-nav-launch-forge" class="btn btn-secondary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: #bf9eff; color: #bf9eff;">Quantum Forge</a>
+                <a href="#" id="chronos-nav-launch-aura" class="btn btn-secondary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: #00d2ff; color: #00d2ff;">Aura Nexus</a>
+                <a href="#" id="chronos-nav-launch-archive" class="btn btn-secondary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: #bf9eff; color: #bf9eff;">Neural Archive</a>
+                <a href="#" id="chronos-nav-launch-chronos" class="btn btn-secondary active" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: #00d2ff; color: #00d2ff;">Chronos Engine</a>
+                <button id="close-chronos" class="btn-icon"><i data-lucide="x"></i></button>
+            </div>
+        </nav>
+        <div class="chronos-grid">
+            <div class="chronos-visual-panel">
+                <div id="chronos-canvas-container" class="chronos-canvas"></div>
+            </div>
+            <div class="chronos-content-panel">
+                <div class="lab-card chronos-schedule-card reveal active">
+                    <div class="panel-header">
+                        <i data-lucide="clock" style="color: #00d2ff;"></i>
+                        <h5>Temporal Optimization Schedule</h5>
+                    </div>
+                    <div id="chronos-schedule-list" class="chronos-list">
+                        <!-- Schedule items injected here -->
                     </div>
                 </div>
             </div>

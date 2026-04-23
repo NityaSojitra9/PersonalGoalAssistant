@@ -8,6 +8,9 @@
 import { Background3D } from './background.js';
 import { ZenithLab } from './lab.js';
 import { QuantumForge } from './forge.js';
+import { AuraNexus } from './aura.js';
+import { NeuralArchive } from './archive.js';
+import { ChronosEngine } from './chronos.js';
 
 /**
  * AppController manages the main lifecycle of the Personal Goal Assistant frontend.
@@ -59,8 +62,11 @@ class AppController {
         
         // Initialize supporting modules
         new Background3D();
-        new ZenithLab();
+        window.zenithLab = new ZenithLab();
         window.quantumForge = new QuantumForge();
+        window.auraNexus = new AuraNexus();
+        window.neuralArchive = new NeuralArchive();
+        window.chronosEngine = new ChronosEngine();
 
         console.log("[*] Personal Goal Assistant successfully initialized.");
     }
@@ -110,6 +116,59 @@ class AppController {
                 this.dom.goalInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
             });
         });
+
+        // Global Overlay Switching & Redirection
+        document.addEventListener('click', (e) => {
+            const target = e.target.closest('a, button');
+            if (!target) return;
+
+            // Handle section links inside overlays
+            if (target.classList.contains('overlay-close-link')) {
+                document.querySelectorAll('.lab-overlay.active').forEach(overlay => {
+                    overlay.classList.remove('active');
+                });
+                document.body.style.overflow = '';
+                return; // Let the default anchor behavior scroll the page
+            }
+
+            // Unified Lab Triggers (main nav and overlay navs)
+            const id = target.id;
+            if (id.includes('launch-lab')) {
+                this.switchOverlay('lab');
+            } else if (id.includes('launch-forge')) {
+                this.switchOverlay('forge');
+            } else if (id.includes('launch-aura')) {
+                this.switchOverlay('aura');
+            } else if (id.includes('launch-archive')) {
+                this.switchOverlay('archive');
+            } else if (id.includes('launch-chronos')) {
+                this.switchOverlay('chronos');
+            }
+        });
+    }
+
+    /**
+     * Closes any active overlay and opens the target one.
+     * @param {'lab' | 'forge' | 'aura'} type 
+     */
+    switchOverlay(type) {
+        // Close all first
+        document.querySelectorAll('.lab-overlay.active').forEach(overlay => {
+            overlay.classList.remove('active');
+        });
+        
+        // Open target
+        if (type === 'lab') {
+            if (window.zenithLab) window.zenithLab.open();
+        } else if (type === 'forge') {
+            if (window.quantumForge) window.quantumForge.open();
+        } else if (type === 'aura') {
+            if (window.auraNexus) window.auraNexus.open();
+        } else if (type === 'archive') {
+            if (window.neuralArchive) window.neuralArchive.open();
+        } else if (type === 'chronos') {
+            if (window.chronosEngine) window.chronosEngine.open();
+        }
     }
 
     /**

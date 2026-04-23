@@ -217,6 +217,133 @@ def handle_habits() -> Response:
     
     return jsonify([h.to_dict() for h in Habit.query.all()])
 
+@app.route('/forge/log', methods=['POST'])
+def log_habit() -> Response:
+    """Records a habit completion and awards XP."""
+    data = request.json
+    habit_id = data.get('habit_id')
+    status = data.get('status', 'completed')
+    
+    habit = Habit.query.get_or_404(habit_id)
+    new_log = HabitLog(habit_id=habit.id, status=status)
+    db.session.add(new_log)
+    
+    if status == 'completed':
+        award_xp(25)
+        
+    db.session.commit()
+    return jsonify({'success': True, 'log': new_log.to_dict(), 'userStats': UserStats.query.first().to_dict()})
+
+@app.route('/forge/predict', methods=['GET'])
+def predict_habits() -> Response:
+    """Generates simulated projections for habits."""
+    habits = Habit.query.all()
+    projections = []
+    
+    for h in habits:
+        logs_count = len(h.logs)
+        consistency = min(100, logs_count * 10) # Simple logic for demo
+        
+        projections.append({
+            'habit': h.name,
+            'persona': 'Strategist' if consistency > 50 else 'Novice',
+            'consistency': consistency,
+            'prediction30Days': f"Expected to reach {consistency + 5}% mastery based on current velocity.",
+            'prediction365Days': f"Full behavioral integration predicted by Q3 next year."
+        })
+        
+    return jsonify({'projections': projections})
+
+@app.route('/analytics/aura', methods=['GET'])
+def get_aura_analytics() -> Response:
+    """Calculates the user's personality aura based on mission data."""
+    missions = Mission.query.all()
+    if not missions:
+        return jsonify({
+            'type': 'Neutral',
+            'color': 'rgba(255, 255, 255, 0.5)',
+            'description': 'Awaiting mission data to crystallize your aura.',
+            'stats': {'blitz': 0, 'balanced': 0, 'mastery': 0}
+        })
+    
+    blitz = Mission.query.filter_by(intensity='blitz').count()
+    balanced = Mission.query.filter_by(intensity='balanced').count()
+    mastery = Mission.query.filter_by(intensity='mastery').count()
+    
+    total = len(missions)
+    
+    # Logic to determine aura type
+    if blitz > balanced and blitz > mastery:
+        aura_type = "Sonic Catalyst"
+        color = "hsla(190, 100%, 50%, 0.6)" # Cyan
+        desc = "Your energy is fast and decisive. You thrive in high-velocity execution."
+    elif mastery > balanced and mastery > blitz:
+        aura_type = "Eternal Architect"
+        color = "hsla(280, 100%, 70%, 0.6)" # Purple
+        desc = "You seek depth and perfection. Your growth is structured and immutable."
+    else:
+        aura_type = "Harmonic Warden"
+        color = "hsla(140, 60%, 50%, 0.6)" # Green
+        desc = "You maintain a perfect equilibrium between speed and quality."
+        
+    return jsonify({
+        'type': aura_type,
+        'color': color,
+        'description': desc,
+        'stats': {
+            'blitz': round(blitz/total * 100),
+            'balanced': round(balanced/total * 100),
+            'mastery': round(mastery/total * 100)
+        }
+    })
+
+@app.route('/analytics/knowledge', methods=['GET'])
+def get_knowledge_graph() -> Response:
+    """Returns the expert knowledge base formatted for 3D graph visualization."""
+    from agent.knowledge_base import EXPERTS
+    
+    nodes = []
+    links = []
+    
+    # Root Node
+    nodes.append({"id": "EKB", "label": "Expert Knowledge", "type": "root", "color": "#00d2ff"})
+    
+    for category, subcats in EXPERTS.items():
+        cat_id = f"cat_{category}"
+        nodes.append({"id": cat_id, "label": category.upper(), "type": "category", "color": "#bf9eff"})
+        links.append({"source": "EKB", "target": cat_id})
+        
+        for subcat, steps in subcats.items():
+            sub_id = f"sub_{category}_{subcat}"
+            nodes.append({"id": sub_id, "label": subcat.title(), "type": "subcategory", "color": "#00d2ff"})
+            links.append({"source": cat_id, "target": sub_id})
+            
+            # Limit steps to avoid clutter, just show first 3 as sub-nodes
+            for i, step in enumerate(steps[:3]):
+                step_id = f"step_{category}_{subcat}_{i}"
+                nodes.append({"id": step_id, "label": f"Step {i+1}", "type": "step", "color": "#ffffff", "full_text": step})
+                links.append({"source": sub_id, "target": step_id})
+                
+    return jsonify({"nodes": nodes, "links": links})
+
+@app.route('/chronos/schedule', methods=['GET'])
+def get_chronos_schedule() -> Response:
+    """Simulates a temporal optimization schedule."""
+    # Simulated data based on common mission structures
+    schedule = [
+        {"time": "08:00", "task": "Neural Priming", "intensity": 0.3, "status": "completed"},
+        {"time": "09:30", "task": "Deep Mission Execution", "intensity": 0.9, "status": "active"},
+        {"time": "13:00", "task": "Bio-Recovery", "intensity": 0.2, "status": "pending"},
+        {"time": "15:00", "task": "Skill Engraving", "intensity": 0.7, "status": "pending"},
+        {"time": "18:00", "task": "Progress Consolidation", "intensity": 0.5, "status": "pending"},
+        {"time": "21:00", "task": "Rest State Sync", "intensity": 0.1, "status": "pending"}
+    ]
+    return jsonify({
+        "day": "Cycle 01",
+        "efficiency": 84,
+        "schedule": schedule
+    })
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     print(f"[*] Life Engine online (Vite Proxy: http://localhost:{port})")

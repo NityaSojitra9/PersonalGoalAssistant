@@ -315,3 +315,177 @@
     .forge-dashboard { grid-template-columns: 1fr; }
     .lab-header .logo { font-size: 1.2rem; }
 }
+
+/* Aura Nexus Specific Styles */
+.aura-overlay {
+    background: radial-gradient(circle at bottom right, #001a1a 0%, #030808 100%);
+}
+
+.aura-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    align-items: center;
+}
+
+.aura-visual-panel {
+    height: 600px;
+    position: relative;
+}
+
+.aura-canvas {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 30px rgba(0, 210, 255, 0.2));
+}
+
+.aura-type-display h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 3rem;
+    font-weight: 900;
+    margin: 1.5rem 0;
+    background: linear-gradient(to bottom, #fff, #00d2ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 10px 30px rgba(0, 210, 255, 0.3);
+}
+
+.aura-stats-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+}
+
+.aura-stat-card {
+    background: rgba(255, 255, 255, 0.02);
+    padding: 1.25rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    display: grid;
+    grid-template-columns: 120px 1fr 50px;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.aura-stat-card .label {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.aura-stat-card .val {
+    font-family: 'Fira Code', monospace;
+    font-weight: 700;
+    color: #00d2ff;
+    text-align: right;
+}
+
+.progress-mini {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-mini div {
+    height: 100%;
+    background: #00d2ff;
+    box-shadow: 0 0 10px #00d2ff;
+    transition: width 1s ease-out;
+}
+
+@media (max-width: 1000px) {
+    .aura-grid {
+        grid-template-columns: 1fr;
+    }
+    .aura-visual-panel {
+        height: 400px;
+    }
+}
+
+/* Neural Archive Styles */
+.archive-grid, .chronos-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.archive-canvas, .chronos-canvas {
+    height: 600px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.knowledge-view {
+    padding: 1.5rem;
+}
+
+.knowledge-intro h5 {
+    font-size: 1.5rem;
+    color: #bf9eff;
+    margin-bottom: 1rem;
+}
+
+.knowledge-step {
+    display: flex;
+    gap: 1.5rem;
+    background: rgba(191, 158, 255, 0.05);
+    padding: 1.5rem;
+    border-radius: 16px;
+    border-left: 4px solid #bf9eff;
+    animation: slideInRight 0.5s ease-out;
+}
+
+/* Chronos Engine Styles */
+.chronos-item {
+    display: grid;
+    grid-template-columns: 80px 1fr 40px;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.25rem;
+    background: rgba(255,255,255,0.02);
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: all 0.3s ease;
+}
+
+.chronos-item.active {
+    background: rgba(0, 210, 255, 0.1);
+    border-color: #00d2ff;
+    box-shadow: 0 0 20px rgba(0, 210, 255, 0.1);
+}
+
+.chronos-item .time {
+    font-family: 'Fira Code', monospace;
+    font-weight: 700;
+    color: #00d2ff;
+}
+
+.chronos-item .intensity-bar {
+    height: 4px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    margin-top: 0.5rem;
+}
+
+.chronos-item .intensity-bar div {
+    height: 100%;
+    background: #00d2ff;
+    border-radius: 10px;
+}
+
+@media (max-width: 1000px) {
+    .archive-grid, .chronos-grid {
+        grid-template-columns: 1fr;
+    }
+}
