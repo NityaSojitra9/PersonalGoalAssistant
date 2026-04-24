@@ -5,12 +5,10 @@
 
 export class NeuralArchive {
     constructor() {
-        this.overlay = document.getElementById('archive-overlay');
-        this.launchBtn = document.getElementById('launch-archive');
-        this.closeBtn = document.getElementById('close-archive');
+        this.overlay = document.getElementById('page-archive');
         this.canvasContainer = document.getElementById('archive-canvas-container');
         this.detailPanel = document.getElementById('knowledge-detail-content');
-        
+
         this.isActive = false;
         this.scene = null;
         this.camera = null;
@@ -18,72 +16,93 @@ export class NeuralArchive {
         this.nodes = [];
         this.links = [];
         this.data = null;
-        
+
         this.init();
     }
 
     init() {
-        if (!this.launchBtn) return;
-
-        this.launchBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            this.open();
-        });
-
-        this.closeBtn?.addEventListener('click', () => this.close());
-        
-        // Handle navbar triggers from other overlays
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('#nav-launch-archive') || 
-                e.target.closest('#forge-nav-launch-archive') || 
-                e.target.closest('#aura-nav-launch-archive') ||
-                e.target.closest('#chronos-nav-launch-archive')) {
-                this.open();
-            }
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.isActive) window.location.hash = '#/';
         });
     }
 
     async open() {
-        // Close other overlays
-        document.querySelectorAll('.lab-overlay.active').forEach(overlay => {
-            if (overlay !== this.overlay) overlay.classList.remove('active');
-        });
-
-        this.overlay.classList.add('active');
         this.isActive = true;
-        document.body.style.overflow = 'hidden';
-
-        await this.loadData();
-        this.init3DGraph();
-        lucide.createIcons();
+        if (this.detailPanel) {
+            this.detailPanel.innerHTML = `
+                <div class="knowledge-intro">
+                    <h5 style="color:#bf9eff">Loading Archive...</h5>
+                    <p style="color:var(--text-dim);margin-top:1rem;">Syncing expert knowledge graph...</p>
+                </div>`;
+        }
+        setTimeout(async () => {
+            await this.loadData();
+            this.init3DGraph();
+            lucide.createIcons();
+        }, 100);
     }
 
-    close() {
-        this.overlay.classList.remove('active');
+    /** Dispose GPU/animation resources — called by router when navigating away. */
+    dispose() {
         this.isActive = false;
-        document.body.style.overflow = '';
-        
         if (this.renderer) {
             this.renderer.dispose();
-            this.canvasContainer.innerHTML = '';
+            this.renderer = null;
         }
+        if (this.canvasContainer) this.canvasContainer.innerHTML = '';
+        this.nodes = [];
+        this.links = [];
     }
 
     async loadData() {
-        const backendUrl = document.getElementById('backend-url').value.replace(/\/$/, "");
+        const input = document.getElementById('backend-url');
+        const backendUrl = (input ? input.value : 'http://localhost:5000').replace(/\/$/, '');
         try {
             const res = await fetch(`${backendUrl}/analytics/knowledge`);
+            if (!res.ok) throw new Error('Knowledge endpoint offline');
             this.data = await res.json();
         } catch (err) {
-            console.error("Archive Sync Failure:", err);
+            console.warn('Archive — backend offline, using demo data:', err.message);
+            this.data = {
+                nodes: [
+                    { id: 'EKB', label: 'Expert Knowledge', type: 'root', color: '#00d2ff' },
+                    { id: 'cat_health', label: 'HEALTH', type: 'category', color: '#bf9eff' },
+                    { id: 'cat_skills', label: 'SKILLS', type: 'category', color: '#bf9eff' },
+                    { id: 'cat_productivity', label: 'PRODUCTIVITY', type: 'category', color: '#bf9eff' },
+                    { id: 'sub_fitness', label: 'Fitness', type: 'subcategory', color: '#00d2ff' },
+                    { id: 'sub_coding', label: 'Coding', type: 'subcategory', color: '#00d2ff' },
+                    { id: 'sub_focus', label: 'Deep Focus', type: 'subcategory', color: '#00d2ff' },
+                    { id: 'step_h1', label: 'Step 1', type: 'step', color: '#ffffff', full_text: 'Start with 30 mins of cardio daily to build baseline endurance.' },
+                    { id: 'step_h2', label: 'Step 2', type: 'step', color: '#ffffff', full_text: 'Apply progressive overload in strength training each week.' },
+                    { id: 'step_s1', label: 'Step 1', type: 'step', color: '#ffffff', full_text: 'Build one project per concept to solidify understanding.' },
+                    { id: 'step_p1', label: 'Step 1', type: 'step', color: '#ffffff', full_text: 'Block 90-minute deep work sessions with zero interruptions.' }
+                ],
+                links: [
+                    { source: 'EKB', target: 'cat_health' }, { source: 'EKB', target: 'cat_skills' }, { source: 'EKB', target: 'cat_productivity' },
+                    { source: 'cat_health', target: 'sub_fitness' }, { source: 'cat_skills', target: 'sub_coding' }, { source: 'cat_productivity', target: 'sub_focus' },
+                    { source: 'sub_fitness', target: 'step_h1' }, { source: 'sub_fitness', target: 'step_h2' },
+                    { source: 'sub_coding', target: 'step_s1' }, { source: 'sub_focus', target: 'step_p1' }
+                ]
+            };
+            if (this.detailPanel) {
+                this.detailPanel.innerHTML = `
+                    <div class="knowledge-intro">
+                        <h5 style="color:#bf9eff">Demo Mode</h5>
+                        <p style="color:var(--text-dim);margin-top:0.5rem;">Backend offline. Showing sample knowledge graph.</p>
+                        <p style="color:var(--text-dim);font-size:0.8rem;margin-top:1rem;">Click any sphere to explore pathways.</p>
+                    </div>`;
+            }
         }
     }
 
     init3DGraph() {
-        if (!this.data) return;
+        if (!this.data || !this.canvasContainer) return;
+        this.canvasContainer.innerHTML = '';
+        this.nodes = [];
+        this.links = [];
 
-        const width = this.canvasContainer.clientWidth;
-        const height = this.canvasContainer.clientHeight;
+        const width = this.canvasContainer.clientWidth || 600;
+        const height = this.canvasContainer.clientHeight || 600;
 
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
@@ -91,44 +110,35 @@ export class NeuralArchive {
         this.renderer.setSize(width, height);
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.canvasContainer.appendChild(this.renderer.domElement);
+        this.camera.position.z = 35;
 
-        this.camera.position.z = 20;
+        this.scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+        const pl = new THREE.PointLight(0xffffff, 1);
+        pl.position.set(10, 10, 10);
+        this.scene.add(pl);
 
-        // Lights
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-        this.scene.add(ambientLight);
-        const pointLight = new THREE.PointLight(0xffffff, 1);
-        pointLight.position.set(10, 10, 10);
-        this.scene.add(pointLight);
-
-        // Create Nodes
-        const geometry = new THREE.SphereGeometry(0.5, 16, 16);
+        const sizeMap = { root: 1.5, category: 1.0, subcategory: 0.7, step: 0.4 };
         this.data.nodes.forEach(nodeData => {
-            const material = new THREE.MeshStandardMaterial({
-                color: nodeData.color,
-                emissive: nodeData.color,
-                emissiveIntensity: 0.2
-            });
-            const node = new THREE.Mesh(geometry, material);
-            node.position.set(
-                (Math.random() - 0.5) * 30,
-                (Math.random() - 0.5) * 30,
-                (Math.random() - 0.5) * 30
+            const size = sizeMap[nodeData.type] || 0.5;
+            const node = new THREE.Mesh(
+                new THREE.SphereGeometry(size, 16, 16),
+                new THREE.MeshStandardMaterial({ color: nodeData.color, emissive: nodeData.color, emissiveIntensity: 0.2 })
             );
+            node.position.set((Math.random() - 0.5) * 30, (Math.random() - 0.5) * 30, (Math.random() - 0.5) * 30);
             node.userData = nodeData;
             this.scene.add(node);
             this.nodes.push(node);
         });
 
-        // Create Links (Lines)
-        const linkMaterial = new THREE.LineBasicMaterial({ color: 0x444444, transparent: true, opacity: 0.3 });
+        const linkMat = new THREE.LineBasicMaterial({ color: 0x444466, transparent: true, opacity: 0.4 });
         this.data.links.forEach(linkData => {
             const source = this.nodes.find(n => n.userData.id === linkData.source);
             const target = this.nodes.find(n => n.userData.id === linkData.target);
             if (source && target) {
-                const points = [source.position, target.position];
-                const linkGeometry = new THREE.BufferGeometry().setFromPoints(points);
-                const line = new THREE.Line(linkGeometry, linkMaterial);
+                const line = new THREE.Line(
+                    new THREE.BufferGeometry().setFromPoints([source.position.clone(), target.position.clone()]),
+                    linkMat
+                );
                 this.scene.add(line);
                 this.links.push({ line, source, target });
             }
@@ -137,67 +147,51 @@ export class NeuralArchive {
         const animate = () => {
             if (!this.isActive) return;
             requestAnimationFrame(animate);
-
-            this.nodes.forEach(node => {
-                node.rotation.y += 0.01;
-                // Subtle floating motion
-                node.position.y += Math.sin(Date.now() * 0.001 + node.position.x) * 0.005;
+            this.nodes.forEach(n => {
+                n.rotation.y += 0.005;
+                n.position.y += Math.sin(Date.now() * 0.001 + n.position.x) * 0.002;
             });
-
-            // Update Link positions
-            this.links.forEach(link => {
-                const positions = link.line.geometry.attributes.position.array;
-                positions[0] = link.source.position.x;
-                positions[1] = link.source.position.y;
-                positions[2] = link.source.position.z;
-                positions[3] = link.target.position.x;
-                positions[4] = link.target.position.y;
-                positions[5] = link.target.position.z;
-                link.line.geometry.attributes.position.needsUpdate = true;
+            this.links.forEach(l => {
+                const p = l.line.geometry.attributes.position.array;
+                p[0] = l.source.position.x; p[1] = l.source.position.y; p[2] = l.source.position.z;
+                p[3] = l.target.position.x; p[4] = l.target.position.y; p[5] = l.target.position.z;
+                l.line.geometry.attributes.position.needsUpdate = true;
             });
-
             this.renderer.render(this.scene, this.camera);
         };
         animate();
 
-        // Raycaster for interaction
+        // Click interaction
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
-
         this.canvasContainer.addEventListener('click', (e) => {
             const rect = this.canvasContainer.getBoundingClientRect();
             mouse.x = ((e.clientX - rect.left) / width) * 2 - 1;
             mouse.y = -((e.clientY - rect.top) / height) * 2 + 1;
-
             raycaster.setFromCamera(mouse, this.camera);
-            const intersects = raycaster.intersectObjects(this.nodes);
-
-            if (intersects.length > 0) {
-                const node = intersects[0].object;
-                this.showNodeDetails(node.userData);
-            }
+            const hits = raycaster.intersectObjects(this.nodes);
+            if (hits.length > 0) this.showNodeDetails(hits[0].object.userData);
         });
     }
 
     showNodeDetails(node) {
+        if (!this.detailPanel) return;
         if (node.type === 'step') {
             this.detailPanel.innerHTML = `
-                <div class="knowledge-step active">
-                    <div class="step-icon"><i data-lucide="book-open"></i></div>
+                <div class="knowledge-step">
                     <div class="step-body">
-                        <h6>${node.label}</h6>
-                        <p>${node.full_text}</p>
+                        <div style="font-size:0.7rem;letter-spacing:2px;color:#bf9eff;margin-bottom:0.5rem;">KNOWLEDGE STEP</div>
+                        <h6 style="font-size:1rem;margin-bottom:0.75rem;">${node.label}</h6>
+                        <p style="color:var(--text-dim);line-height:1.7;">${node.full_text}</p>
                     </div>
-                </div>
-            `;
+                </div>`;
         } else {
             this.detailPanel.innerHTML = `
                 <div class="knowledge-intro">
-                    <h5>${node.label}</h5>
-                    <p>Category: ${node.type.toUpperCase()}</p>
-                    <p style="font-size: 0.8rem; color: var(--text-dim); margin-top: 1rem;">Select a step node in the 3D graph to view detailed mission requirements.</p>
-                </div>
-            `;
+                    <h5 style="color:#bf9eff">${node.label}</h5>
+                    <p style="color:var(--text-dim);margin-top:0.5rem;font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;">${node.type}</p>
+                    <p style="color:var(--text-dim);font-size:0.85rem;margin-top:1rem;line-height:1.7;">Select a <span style="color:#bf9eff">white sphere</span> (Step node) to view detailed mission requirements.</p>
+                </div>`;
         }
         lucide.createIcons();
     }

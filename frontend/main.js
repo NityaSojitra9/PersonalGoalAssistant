@@ -33,8 +33,6 @@ class AppController {
             copyBtn: document.getElementById('copy-report-btn'),
             downloadBtn: document.getElementById('download-report-btn'),
             processingView: document.getElementById('processing-view'),
-            progressBarParent: document.getElementById('mission-progress-parent'),
-            progressBarFill: document.getElementById('mission-progress-fill'),
             historySection: document.getElementById('history-section'),
             historyList: document.getElementById('mission-history-list'),
             goalInput: document.getElementById('goal'),
@@ -43,7 +41,11 @@ class AppController {
             userLevel: document.getElementById('user-level'),
             userXp: document.getElementById('user-xp'),
             xpBarFill: document.getElementById('xp-bar-fill'),
-            xpToNext: document.getElementById('xp-to-next')
+            mainNav: document.getElementById('main-nav'),
+            mobileMenuBtn: document.getElementById('mobile-menu-btn'),
+            sideDrawer: document.getElementById('side-drawer'),
+            drawerOverlay: document.getElementById('drawer-overlay'),
+            closeDrawerBtn: document.getElementById('close-drawer')
         };
 
         this.init();
@@ -59,14 +61,15 @@ class AppController {
         this.setupZenith();
         this.loadMissions();
         this.loadUserStats();
+        this.setupRouter();
         
-        // Initialize supporting modules
-        new Background3D();
-        window.zenithLab = new ZenithLab();
-        window.quantumForge = new QuantumForge();
-        window.auraNexus = new AuraNexus();
-        window.neuralArchive = new NeuralArchive();
-        window.chronosEngine = new ChronosEngine();
+        // Initialize supporting modules with error boundaries
+        try { new Background3D(); } catch(e) { console.error("Background3D init failed:", e); }
+        try { window.zenithLab = new ZenithLab(); } catch(e) { console.error("ZenithLab init failed:", e); }
+        try { window.quantumForge = new QuantumForge(); } catch(e) { console.error("QuantumForge init failed:", e); }
+        try { window.auraNexus = new AuraNexus(); } catch(e) { console.error("AuraNexus init failed:", e); }
+        try { window.neuralArchive = new NeuralArchive(); } catch(e) { console.error("NeuralArchive init failed:", e); }
+        try { window.chronosEngine = new ChronosEngine(); } catch(e) { console.error("ChronosEngine init failed:", e); }
 
         console.log("[*] Personal Goal Assistant successfully initialized.");
     }
@@ -117,58 +120,158 @@ class AppController {
             });
         });
 
-        // Global Overlay Switching & Redirection
+        // Mobile Drawer Toggles — bound to class method for consistent access
+        this.dom.mobileMenuBtn.addEventListener('click', () => this.toggleDrawer(true));
+        this.dom.closeDrawerBtn.addEventListener('click', () => this.toggleDrawer(false));
+        this.dom.drawerOverlay.addEventListener('click', () => this.toggleDrawer(false));
+
+        // Scroll Effects
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                this.dom.mainNav.classList.add('scrolled');
+            } else {
+                this.dom.mainNav.classList.remove('scrolled');
+            }
+            this.updateActiveNavLink();
+        });
+
+        // Global Navigation Delegation
         document.addEventListener('click', (e) => {
             const target = e.target.closest('a, button');
             if (!target) return;
 
-            // Handle section links inside overlays
-            if (target.classList.contains('overlay-close-link')) {
-                document.querySelectorAll('.lab-overlay.active').forEach(overlay => {
-                    overlay.classList.remove('active');
-                });
-                document.body.style.overflow = '';
-                return; // Let the default anchor behavior scroll the page
-            }
+            // Section link handling: smooth-scroll to in-page anchors
+            const href = target.getAttribute('href') || '';
+            if (href.startsWith('#') && !href.startsWith('#/')) {
+                const targetId = href.substring(1);
+                const currentHash = window.location.hash;
+                const isOnHome = currentHash === '' || currentHash === '#' || currentHash === '#/';
 
-            // Unified Lab Triggers (main nav and overlay navs)
-            const id = target.id;
-            if (id.includes('launch-lab')) {
-                this.switchOverlay('lab');
-            } else if (id.includes('launch-forge')) {
-                this.switchOverlay('forge');
-            } else if (id.includes('launch-aura')) {
-                this.switchOverlay('aura');
-            } else if (id.includes('launch-archive')) {
-                this.switchOverlay('archive');
-            } else if (id.includes('launch-chronos')) {
-                this.switchOverlay('chronos');
+                if (!isOnHome) {
+                    // Navigate home first, then scroll to the section
+                    e.preventDefault();
+                    window.location.hash = '#/';
+                    setTimeout(() => {
+                        const el = document.getElementById(targetId);
+                        if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    }, 350);
+                }
+                // Close mobile drawer if open
+                this.toggleDrawer(false);
             }
         });
     }
 
     /**
-     * Closes any active overlay and opens the target one.
-     * @param {'lab' | 'forge' | 'aura'} type 
+     * Toggles the mobile side drawer open or closed.
+     * @param {boolean} active
      */
-    switchOverlay(type) {
-        // Close all first
-        document.querySelectorAll('.lab-overlay.active').forEach(overlay => {
-            overlay.classList.remove('active');
+    toggleDrawer(active) {
+        this.dom.sideDrawer.classList.toggle('active', active);
+        this.dom.drawerOverlay.classList.toggle('active', active);
+        document.body.style.overflow = active ? 'hidden' : '';
+    }
+
+    /**
+     * Updates the active state of navigation links based on current scroll position.
+     */
+    updateActiveNavLink() {
+        const sections = ['how-it-works', 'modules', 'use-cases', 'app-section'];
+        let current = '';
+
+        sections.forEach(section => {
+            const el = document.getElementById(section);
+            if (el) {
+                const rect = el.getBoundingClientRect();
+                if (rect.top <= 150) {
+                    current = section;
+                }
+            }
         });
-        
-        // Open target
-        if (type === 'lab') {
+
+        document.querySelectorAll('.nav-links a').forEach(a => {
+            a.classList.remove('active');
+            if (a.getAttribute('href') === `#${current}`) {
+                a.classList.add('active');
+            }
+        });
+    }
+
+    /**
+     * Initializes the hash-based router.
+     */
+    setupRouter() {
+        window.addEventListener('hashchange', () => this.handleRouting());
+        this.handleRouting(); // Initial load
+    }
+
+    /**
+     * Orchestrates page transitions based on current hash.
+     * Disposes previous page resources before switching.
+     */
+    handleRouting() {
+        const hash = window.location.hash || '#/';
+        const prevHash = this._activeHash || '';
+        this._activeHash = hash;
+
+        // Dispose the module that was previously active (free Three.js GPU resources)
+        this._disposeModule(prevHash);
+
+        // Hide all pages, scroll to top
+        document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+        window.scrollTo(0, 0);
+
+        // Route mapping
+        if (hash === '#/' || hash === '') {
+            document.getElementById('page-home').classList.add('active');
+        } else if (hash === '#/console') {
+            document.getElementById('page-console').classList.add('active');
+        } else if (hash === '#/lab') {
+            document.getElementById('page-lab').classList.add('active');
             if (window.zenithLab) window.zenithLab.open();
-        } else if (type === 'forge') {
+        } else if (hash === '#/forge') {
+            document.getElementById('page-forge').classList.add('active');
             if (window.quantumForge) window.quantumForge.open();
-        } else if (type === 'aura') {
+        } else if (hash === '#/aura') {
+            document.getElementById('page-aura').classList.add('active');
             if (window.auraNexus) window.auraNexus.open();
-        } else if (type === 'archive') {
+        } else if (hash === '#/archive') {
+            document.getElementById('page-archive').classList.add('active');
             if (window.neuralArchive) window.neuralArchive.open();
-        } else if (type === 'chronos') {
+        } else if (hash === '#/chronos') {
+            document.getElementById('page-chronos').classList.add('active');
             if (window.chronosEngine) window.chronosEngine.open();
         }
+
+        lucide.createIcons();
+    }
+
+    /**
+     * Disposes GPU/animation resources for a given route's module.
+     * Called before switching away from a page.
+     * @param {string} hash - The hash route being left.
+     */
+    _disposeModule(hash) {
+        if (hash === '#/lab'     && window.zenithLab)    window.zenithLab.dispose();
+        if (hash === '#/forge'   && window.quantumForge) window.quantumForge.dispose();
+        if (hash === '#/aura'    && window.auraNexus)    window.auraNexus.dispose();
+        if (hash === '#/archive' && window.neuralArchive) window.neuralArchive.dispose();
+        if (hash === '#/chronos' && window.chronosEngine) window.chronosEngine.dispose();
+    }
+
+    /**
+     * Navigates home.
+     */
+    closeAllOverlays() {
+        window.location.hash = '#/';
+    }
+
+    /**
+     * Navigates to a specific module page.
+     * @param {string} type
+     */
+    switchOverlay(type) {
+        window.location.hash = `#/${type}`;
     }
 
     /**
@@ -303,7 +406,6 @@ class AppController {
      */
     renderMissionReport(goal, subtasks, backendUrl) {
         this.dom.processingView.style.display = 'none';
-        this.dom.progressBarParent.style.display = 'block';
         this.dom.reportSection.style.display = 'block';
         this.dom.reportSection.classList.add('active');
         
@@ -343,18 +445,20 @@ class AppController {
                 const isChecked = e.target.checked;
                 
                 item.classList.toggle('completed', isChecked);
+                this.updateProgress();
                 
                 try {
-                    await fetch(`${backendUrl}/subtasks/${subtask_id}`, {
+                    const patchResponse = await fetch(`${backendUrl}/subtasks/${subtask_id}`, {
                         method: 'PATCH',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ is_completed: isChecked })
                     });
-                    const data = await response.json();
-                    if (data.userStats) {
-                        this.updateMasteryUI(data.userStats);
+                    if (patchResponse.ok) {
+                        const data = await patchResponse.json();
+                        if (data.userStats) {
+                            this.updateMasteryUI(data.userStats);
+                        }
                     }
-                    this.updateProgress();
                 } catch (err) {
                     console.error("Failed to sync subtask state:", err);
                 }
@@ -384,30 +488,30 @@ class AppController {
      * @param {Object} stats 
      */
     updateMasteryUI(stats) {
-        this.dom.userRank.textContent = stats.rank;
-        this.dom.userLevel.textContent = stats.level;
-        this.dom.userXp.textContent = stats.xp.toLocaleString();
+        if (this.dom.userRank) this.dom.userRank.textContent = stats.rank;
+        if (this.dom.userLevel) this.dom.userLevel.textContent = stats.level;
+        if (this.dom.userXp) this.dom.userXp.textContent = stats.xp.toLocaleString();
         
         // Calculate progress to next level
-        const currentLevelXp = ((stats.level - 1) ** 2) * 100;
-        const nextLevelXp = stats.nextLevelXp;
-        const progressInLevel = stats.xp - currentLevelXp;
-        const totalInLevel = nextLevelXp - currentLevelXp;
-        
-        const percentage = Math.min(Math.max((progressInLevel / totalInLevel) * 100, 0), 100);
-        this.dom.xpBarFill.style.width = `${percentage}%`;
-        
-        const remaining = nextLevelXp - stats.xp;
-        this.dom.xpToNext.textContent = `${remaining.toLocaleString()} XP to next level`;
+        if (this.dom.xpBarFill && stats.nextLevelXp) {
+            const currentLevelXp = ((stats.level - 1) ** 2) * 100;
+            const nextLevelXp = stats.nextLevelXp;
+            const progressInLevel = stats.xp - currentLevelXp;
+            const totalInLevel = nextLevelXp - currentLevelXp;
+            const percentage = Math.min(Math.max((progressInLevel / totalInLevel) * 100, 0), 100);
+            this.dom.xpBarFill.style.width = `${percentage}%`;
+        }
 
         // Rank-based color updates
-        const rankColors = {
-            "Novice Explorer": "hsla(var(--primary), 1)",
-            "Strategic Architect": "hsla(var(--accent), 1)",
-            "Mission Commander": "#ffcc00",
-            "Silicon Overlord": "#ff3366"
-        };
-        this.dom.userRank.style.color = rankColors[stats.rank] || "white";
+        if (this.dom.userRank) {
+            const rankColors = {
+                "Novice Explorer": "hsla(var(--primary), 1)",
+                "Strategic Architect": "hsla(var(--accent), 1)",
+                "Mission Commander": "#ffcc00",
+                "Silicon Overlord": "#ff3366"
+            };
+            this.dom.userRank.style.color = rankColors[stats.rank] || "white";
+        }
     }
 
     /**

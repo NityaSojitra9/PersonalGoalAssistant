@@ -3,86 +3,87 @@
  * @description Chronos Engine module. Visualizes the daily schedule as a 3D Temporal Vortex.
  */
 
+const DEMO_SCHEDULE = [
+    { time: '08:00', task: 'Neural Priming',        intensity: 0.3, status: 'completed' },
+    { time: '09:30', task: 'Deep Mission Execution', intensity: 0.9, status: 'active'    },
+    { time: '13:00', task: 'Bio-Recovery',           intensity: 0.2, status: 'pending'   },
+    { time: '15:00', task: 'Skill Engraving',        intensity: 0.7, status: 'pending'   },
+    { time: '18:00', task: 'Progress Consolidation', intensity: 0.5, status: 'pending'   },
+    { time: '21:00', task: 'Rest State Sync',        intensity: 0.1, status: 'pending'   }
+];
+
 export class ChronosEngine {
     constructor() {
-        this.overlay = document.getElementById('chronos-overlay');
-        this.launchBtn = document.getElementById('launch-chronos');
-        this.closeBtn = document.getElementById('close-chronos');
+        this.overlay = document.getElementById('page-chronos');
         this.canvasContainer = document.getElementById('chronos-canvas-container');
         this.scheduleList = document.getElementById('chronos-schedule-list');
-        
+
         this.isActive = false;
         this.scene = null;
         this.camera = null;
         this.renderer = null;
         this.vortex = null;
         this.schedule = [];
-        
+
         this.init();
     }
 
     init() {
-        if (!this.launchBtn) return;
-
-        this.launchBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            this.open();
-        });
-
-        this.closeBtn?.addEventListener('click', () => this.close());
-
-        // Handle navbar triggers
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('#nav-launch-chronos') || 
-                e.target.closest('#forge-nav-launch-chronos') || 
-                e.target.closest('#aura-nav-launch-chronos') ||
-                e.target.closest('#archive-nav-launch-chronos')) {
-                this.open();
-            }
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.isActive) window.location.hash = '#/';
         });
     }
 
     async open() {
-        // Close other overlays
-        document.querySelectorAll('.lab-overlay.active').forEach(overlay => {
-            if (overlay !== this.overlay) overlay.classList.remove('active');
-        });
-
-        this.overlay.classList.add('active');
         this.isActive = true;
-        document.body.style.overflow = 'hidden';
-
-        await this.loadData();
-        this.init3DVortex();
-        lucide.createIcons();
+        setTimeout(async () => {
+            await this.loadData();
+            this.init3DVortex();
+            lucide.createIcons();
+        }, 100);
     }
 
-    close() {
-        this.overlay.classList.remove('active');
+    /** Dispose GPU/animation resources — called by router when navigating away. */
+    dispose() {
         this.isActive = false;
-        document.body.style.overflow = '';
-        
         if (this.renderer) {
             this.renderer.dispose();
-            this.canvasContainer.innerHTML = '';
+            this.renderer = null;
         }
+        if (this.canvasContainer) this.canvasContainer.innerHTML = '';
+        this.schedule = [];
+        this.vortex = null;
+    }
+
+    /** Refresh schedule — exposed to the sync button in the page header. */
+    async sync() {
+        if (!this.isActive) return;
+        if (this.scheduleList) this.scheduleList.innerHTML = `<div style="color:var(--text-dim);font-size:0.85rem;padding:1rem;">Syncing schedule...</div>`;
+        await this.loadData();
+        this.init3DVortex();
     }
 
     async loadData() {
-        const backendUrl = document.getElementById('backend-url').value.replace(/\/$/, "");
+        const input = document.getElementById('backend-url');
+        const backendUrl = (input ? input.value : 'http://localhost:5000').replace(/\/$/, '');
         try {
             const res = await fetch(`${backendUrl}/chronos/schedule`);
+            if (!res.ok) throw new Error('Chronos endpoint offline');
             const data = await res.json();
             this.schedule = data.schedule;
-            this.renderSchedule();
         } catch (err) {
-            console.error("Chronos Sync Failure:", err);
+            console.warn('Chronos — backend offline, using demo schedule:', err.message);
+            this.schedule = DEMO_SCHEDULE;
         }
+        this.renderSchedule();
     }
 
     init3DVortex() {
-        const width = this.canvasContainer.clientWidth;
-        const height = this.canvasContainer.clientHeight;
+        if (!this.canvasContainer) return;
+        this.canvasContainer.innerHTML = '';
+
+        const width = this.canvasContainer.clientWidth || 600;
+        const height = this.canvasContainer.clientHeight || 600;
 
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
@@ -90,74 +91,63 @@ export class ChronosEngine {
         this.renderer.setSize(width, height);
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.canvasContainer.appendChild(this.renderer.domElement);
+        this.camera.position.set(0, 5, 12);
+        this.camera.lookAt(0, 5, 0);
 
-        this.camera.position.z = 10;
-        this.camera.position.y = 5;
-        this.camera.lookAt(0, 0, 0);
+        this.scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+        const pl = new THREE.PointLight(0x00d2ff, 2);
+        pl.position.set(0, 5, 5);
+        this.scene.add(pl);
 
-        // Vortex Geometry (Tube in a spiral)
-        const curvePoints = [];
-        for (let i = 0; i < 100; i++) {
+        // Spiral vortex
+        const curvePoints = Array.from({ length: 100 }, (_, i) => {
             const t = i / 10;
-            curvePoints.push(new THREE.Vector3(
-                Math.cos(t) * (t / 2),
-                t,
-                Math.sin(t) * (t / 2)
-            ));
-        }
-        const curve = new THREE.CatmullRomCurve3(curvePoints);
-        const geometry = new THREE.TubeGeometry(curve, 100, 0.1, 8, false);
-        const material = new THREE.MeshStandardMaterial({ 
-            color: 0x00d2ff, 
-            emissive: 0x00d2ff, 
-            emissiveIntensity: 0.5,
-            wireframe: true 
+            return new THREE.Vector3(Math.cos(t) * (t / 2), t, Math.sin(t) * (t / 2));
         });
-        
-        this.vortex = new THREE.Mesh(geometry, material);
+        const curve = new THREE.CatmullRomCurve3(curvePoints);
+        this.vortex = new THREE.Mesh(
+            new THREE.TubeGeometry(curve, 100, 0.08, 8, false),
+            new THREE.MeshStandardMaterial({ color: 0x00d2ff, emissive: 0x00d2ff, emissiveIntensity: 0.6, wireframe: true })
+        );
         this.scene.add(this.vortex);
 
-        // Add "Task Particles" along the vortex
+        // Task particles
         this.schedule.forEach((task, i) => {
-            const t = (i / this.schedule.length) * 10;
-            const particleGeom = new THREE.SphereGeometry(0.3, 16, 16);
-            const particleMat = new THREE.MeshStandardMaterial({
-                color: task.status === 'active' ? 0xff0000 : 0xbf9eff,
-                emissive: task.status === 'active' ? 0xff0000 : 0xbf9eff,
-                emissiveIntensity: 0.8
-            });
-            const particle = new THREE.Mesh(particleGeom, particleMat);
-            particle.position.set(
-                Math.cos(t) * (t / 2),
-                t,
-                Math.sin(t) * (t / 2)
+            const t = (i / Math.max(this.schedule.length, 1)) * 10;
+            const color = task.status === 'completed' ? 0x3fb950 : (task.status === 'active' ? 0xff6600 : 0xbf9eff);
+            const particle = new THREE.Mesh(
+                new THREE.SphereGeometry(0.25, 16, 16),
+                new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0.8 })
             );
+            particle.position.set(Math.cos(t) * (t / 2), t, Math.sin(t) * (t / 2));
             this.scene.add(particle);
         });
 
         const animate = () => {
             if (!this.isActive) return;
             requestAnimationFrame(animate);
-            this.vortex.rotation.y += 0.02;
+            if (this.vortex) this.vortex.rotation.y += 0.01;
             this.renderer.render(this.scene, this.camera);
         };
         animate();
     }
 
     renderSchedule() {
+        if (!this.scheduleList) return;
+        const statusColor = { completed: '#3fb950', active: '#ff6600', pending: 'var(--text-dim)' };
+        const statusIcon  = { completed: 'check-circle', active: 'play-circle', pending: 'circle' };
         this.scheduleList.innerHTML = this.schedule.map(s => `
             <div class="chronos-item ${s.status}">
-                <div class="time">${s.time}</div>
+                <div class="time" style="color:${statusColor[s.status] || 'var(--text-dim)'}">${s.time}</div>
                 <div class="details">
-                    <h6>${s.task}</h6>
+                    <h6 style="font-weight:700;font-size:0.9rem;color:white;">${s.task}</h6>
                     <div class="intensity-bar">
-                        <div style="width: ${s.intensity * 100}%"></div>
+                        <div style="width:${s.intensity * 100}%;background:${statusColor[s.status] || '#bf9eff'};"></div>
                     </div>
                 </div>
-                <div class="status-icon">
-                    <i data-lucide="${s.status === 'completed' ? 'check-circle' : (s.status === 'active' ? 'play-circle' : 'circle')}"></i>
+                <div style="color:${statusColor[s.status] || 'var(--text-dim)'}">
+                    <i data-lucide="${statusIcon[s.status] || 'circle'}" style="width:18px;height:18px;"></i>
                 </div>
-            </div>
-        `).join('');
+            </div>`).join('');
     }
 }
