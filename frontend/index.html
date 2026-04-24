@@ -27,512 +27,518 @@
 </head>
 <body>
     <canvas id="bg-canvas"></canvas>
-    <nav>
-        <div class="logo">GOAL.PERSONAL</div>
-        <div class="nav-links" style="display: flex; gap: 2rem; align-items: center;">
-            <a href="#how-it-works" aria-label="View how it works section" style="color: var(--text-dim); text-decoration: none; font-weight: 600; font-size: 0.9rem;">Process</a>
-            <a href="#modules" aria-label="Explore core modules" style="color: var(--text-dim); text-decoration: none; font-weight: 600; font-size: 0.9rem;">Modules</a>
-            <a href="#use-cases" aria-label="See use cases" style="color: var(--text-dim); text-decoration: none; font-weight: 600; font-size: 0.9rem;">Capabilities</a>
-            <a href="#" id="launch-lab" class="btn btn-secondary" aria-label="Launch Zenith Growth Lab" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: hsla(var(--accent), 0.5); color: hsla(var(--accent), 1);">Zenith Growth Lab</a>
-            <a href="#" id="launch-forge" class="btn btn-secondary" aria-label="Launch Quantum Forge" style="padding: 0.6rem 1.2rem; font-size: 0.8rem; border-color: #bf9eff; color: #bf9eff;">Quantum Forge</a>
-            <a href="#app-section" class="btn btn-primary" aria-label="Launch Console" style="padding: 0.6rem 1.2rem; font-size: 0.8rem;">Launch Console</a>
+    <nav id="main-nav">
+        <div class="nav-container">
+            <a href="#" class="logo">GOAL.PERSONAL</a>
+            
+            <div class="nav-links">
+                <a href="#how-it-works" class="nav-section-link"><i data-lucide="layers" style="width: 14px; margin-right: 6px;"></i>Process</a>
+                <a href="#modules" class="nav-section-link"><i data-lucide="box" style="width: 14px; margin-right: 6px;"></i>Modules</a>
+                <a href="#use-cases" class="nav-section-link"><i data-lucide="compass" style="width: 14px; margin-right: 6px;"></i>Capabilities</a>
+                
+                <div class="dropdown">
+                    <div class="dropdown-trigger">
+                        <span>Strategic Lab</span>
+                        <i data-lucide="chevron-down" style="width: 14px;"></i>
+                    </div>
+                    <div class="dropdown-content">
+                        <a href="#/lab"><i data-lucide="activity"></i> Zenith Lab</a>
+                        <a href="#/forge"><i data-lucide="zap"></i> Quantum Forge</a>
+                        <a href="#/aura"><i data-lucide="sparkles"></i> Aura Nexus</a>
+                        <a href="#/archive"><i data-lucide="database"></i> Neural Archive</a>
+                        <a href="#/chronos"><i data-lucide="clock"></i> Chronos Engine</a>
+                    </div>
+                </div>
+                <a href="#/console" class="btn btn-primary">Console</a>
+            </div>
+
+            <button class="menu-toggle" id="mobile-menu-btn" aria-label="Toggle Menu">
+                <i data-lucide="menu"></i>
+            </button>
         </div>
     </nav>
 
-    <header class="hero">
-        <div class="hero-badge reveal">Autonomous Personal Executive v2.0</div>
-        <h1 class="reveal">Your <span>Autonomous</span> Personal Goal Partner</h1>
-        <p class="reveal">A reinforcement learning agent that plans, mimics behavior, and executes your lifestyle objectives—from health habits to skill mastery.</p>
-        <div class="cta-group reveal">
-            <a href="#app-section" class="btn btn-primary">Initiate Control</a>
-            <a href="#how-it-works" class="btn btn-secondary">System Overview</a>
+    <div class="drawer-overlay" id="drawer-overlay"></div>
+    <div class="side-drawer" id="side-drawer">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem;">
+            <div class="logo">MENU</div>
+            <button id="close-drawer" class="btn-icon" style="color: white;"><i data-lucide="x"></i></button>
         </div>
-    </header>
-
-    <div class="success-dashboard reveal">
-        <div class="stat-item">
-            <span class="stat-value" data-target="1240">0</span>
-            <span class="stat-label">Missions Synthesized</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-value">98.4%</span>
-            <span class="stat-label">Strategic Accuracy</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-value" data-target="15200">0</span>
-            <span class="stat-label">Hours Reclaimed</span>
-        </div>
+        <a href="#how-it-works" class="drawer-link nav-section-link">Process</a>
+        <a href="#modules" class="drawer-link nav-section-link">Modules</a>
+        <a href="#use-cases" class="drawer-link nav-section-link">Capabilities</a>
+        <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 1rem 0;" class="nav-section-link"></div>
+        <a href="#/lab" class="drawer-link">Zenith Lab</a>
+        <a href="#/forge" class="drawer-link">Quantum Forge</a>
+        <a href="#/aura" class="drawer-link">Aura Nexus</a>
+        <a href="#/archive" class="drawer-link">Neural Archive</a>
+        <a href="#/chronos" class="drawer-link">Chronos Engine</a>
+        <a href="#/console" class="drawer-link">Console</a>
     </div>
 
-    <section id="how-it-works" style="padding: 100px 10%; text-align: center;">
-        <div class="section-header reveal">
-            <h2>Your Path to Mastery</h2>
-            <p>Our four-stage autonomous workflow handles the complexity of personal growth.</p>
-        </div>
-        <div class="process-grid stagger-reveal">
-            <div class="process-step">
-                <div class="step-number">01</div>
-                <h3>Dream</h3>
-                <p>The planner breaks your big dreams into actionable daily subtasks.</p>
-            </div>
-            <div class="process-step">
-                <div class="step-number">02</div>
-                <h3>Retrieve</h3>
-                <p>Milvus VDB pulls historical patterns and user preferences.</p>
-            </div>
-            <div class="process-step">
-                <div class="step-number">03</div>
-                <h3>Execute</h3>
-                <p>The agent handles the digital legwork through high-fidelity mimicry.</p>
-            </div>
-            <div class="process-step">
-                <div class="step-number">04</div>
-                <h3>Achieve</h3>
-                <p>System learns your preferences to optimize every future goal.</p>
-            </div>
-        </div>
-    </section>
+    <main id="router-view">
+        <section id="page-home" class="page-content active">
+            <header class="hero">
+                <div class="hero-badge reveal">Autonomous Personal Executive v2.0</div>
+                <h1 class="reveal">Your <span>Autonomous</span> Personal Goal Partner</h1>
+                <p class="reveal">A reinforcement learning agent that plans, mimics behavior, and executes your lifestyle objectives—from health habits to skill mastery.</p>
+                <div class="cta-group reveal">
+                    <a href="#/console" class="btn btn-primary">Initiate Control</a>
+                    <a href="#how-it-works" class="btn btn-secondary">System Overview</a>
+                </div>
+            </header>
 
-    <section id="modules" style="padding: 100px 10%; background: rgba(255,255,255,0.02);">
-        <div class="section-header reveal" style="text-align: center;">
-            <h2>Lifestyle Engine Core</h2>
-        </div>
-        <div class="features stagger-reveal" style="padding: 0;">
-            <div class="feature-card">
-                <div class="feature-icon"><i data-lucide="brain"></i></div>
-                <h3>Life Planner</h3>
-                <p>Derives optimal paths for your unique personal objectives and lifestyle.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon"><i data-lucide="mouse-pointer-2"></i></div>
-                <h3>Interaction Engine</h3>
-                <p>Reinforcement learning models that handle real-time UI interaction and peripheral control.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon"><i data-lucide="database"></i></div>
-                <h3>Habit Vault</h3>
-                <p>Safe Milvus vector storage for your personal behavioral patterns and progress.</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="milvus" class="milvus-section reveal">
-        <div class="milvus-content">
-            <h2 style="margin: 1.5rem 0;">A Personal Brain for Your Goals</h2>
-            <p style="color: var(--text-dim); margin-bottom: 2rem;">The Assistant doesn't just plan; it remembers. Your previous successes and preferences are vectorized and stored, creating a personalized blueprint for everything you want to achieve.</p>
-            <ul style="list-style: none; color: white;">
-                <li style="margin-bottom: 1rem;"><i data-lucide="check" style="width: 16px; color: hsla(var(--accent), 1);"></i> Intelligent preference retrieval</li>
-                <li style="margin-bottom: 1rem;"><i data-lucide="check" style="width: 16px; color: hsla(var(--accent), 1);"></i> Cross-device habit syncing</li>
-                <li style="margin-bottom: 1rem;"><i data-lucide="check" style="width: 16px; color: hsla(var(--accent), 1);"></i> Secure, private personal data memory</li>
-            </ul>
-        </div>
-        <div class="milvus-visual">
-            <div class="neural-node" style="top: 20%; left: 30%;"></div>
-            <div class="neural-node" style="top: 60%; left: 10%; animation-delay: 0.5s;"></div>
-            <div class="neural-node" style="top: 40%; left: 80%; animation-delay: 1s;"></div>
-            <div class="neural-node" style="top: 80%; left: 50%; animation-delay: 1.5s;"></div>
-            <div class="neural-node" style="top: 10%; left: 70%; animation-delay: 0.2s;"></div>
-            <!-- Connection lines simulated by SVG -->
-            <svg style="position: absolute; width: 100%; height: 100%; opacity: 0.2;">
-                <line x1="30%" y1="20%" x2="70%" y2="10%" stroke="white" stroke-width="1" />
-                <line x1="30%" y1="20%" x2="10%" y2="60%" stroke="white" stroke-width="1" />
-                <line x1="70%" y1="10%" x2="80%" y2="40%" stroke="white" stroke-width="1" />
-                <line x1="10%" y1="60%" x2="50%" y2="80%" stroke="white" stroke-width="1" />
-                <line x1="80%" y1="40%" x2="50%" y2="80%" stroke="white" stroke-width="1" />
-            </svg>
-        </div>
-    </section>
-
-    <section id="use-cases" style="padding: 100px 10%;">
-        <div class="section-header reveal" style="text-align: center;">
-            <h2>Personal Missions</h2>
-            <p>From micro-habits to life-changing transformations.</p>
-        </div>
-        <div class="use-cases-grid stagger-reveal">
-            <div class="use-case-card">
-                <div class="use-case-img"><i data-lucide="heart" style="width: 40px; height: 40px;"></i></div>
-                <div class="use-case-content">
-                    <h4>Health & Wellness</h4>
-                    <p>Automate your fitness journey, from meal prep scheduling to tracking your morning routines.</p>
+            <div class="success-dashboard reveal">
+                <div class="stat-item">
+                    <span class="stat-value" data-target="1240">0</span>
+                    <span class="stat-label">Missions Synthesized</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">98.4%</span>
+                    <span class="stat-label">Strategic Accuracy</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" data-target="15200">0</span>
+                    <span class="stat-label">Hours Reclaimed</span>
                 </div>
             </div>
-            <div class="use-case-card">
-                <div class="use-case-img"><i data-lucide="book-open" style="width: 40px; height: 40px;"></i></div>
-                <div class="use-case-content">
-                    <h4>Skill Acquisition</h4>
-                    <p>Master new languages or instruments with an agent that finds resources and builds your curriculum.</p>
+
+            <section id="how-it-works" style="padding: 100px 10%; text-align: center;">
+                <div class="section-header reveal">
+                    <h2>Your Path to Mastery</h2>
+                    <p>Our four-stage autonomous workflow handles the complexity of personal growth.</p>
                 </div>
-            </div>
-            <div class="use-case-card">
-                <div class="use-case-img"><i data-lucide="clapperboard" style="width: 40px; height: 40px;"></i></div>
-                <div class="use-case-content">
-                    <h4>Lifestyle Logistics</h4>
-                    <p>Offload the "admin of life"—travel planning, appointment booking, and gift reminders.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="blueprints" style="padding: 100px 10%; background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(255, 255, 255, 0.02)); border-bottom: 1px solid var(--border);">
-        <div class="section-header reveal" style="text-align: center;">
-            <h2>Verified Blueprints</h2>
-            <p>Ready-to-launch expert goals verified by our strategic engine.</p>
-        </div>
-        <div class="blueprint-scroll">
-            <div class="blueprint-pill">3-Month Marathon</div>
-            <div class="blueprint-pill">Python Mastery</div>
-            <div class="blueprint-pill">Daily Mindfulness</div>
-            <div class="blueprint-pill">Public Speaking</div>
-            <div class="blueprint-pill">Financial Freedom</div>
-            <div class="blueprint-pill">Guitar Foundations</div>
-        </div>
-    </section>
-
-    <section id="app-section">
-        <div class="section-header reveal">
-            <h2>Agent Control Center</h2>
-            <p style="color: var(--text-dim);">Define your objective and watch the agent materialize your goals.</p>
-        </div>
-
-        <div class="container reveal app-grid">
-            <!-- Mastery Sidebar -->
-            <div class="mastery-sidebar">
-                <div class="card mastery-widget" style="margin-bottom: 0;">
-                    <div class="panel-header">
-                        <i data-lucide="award" style="color: hsla(var(--accent), 1); width: 16px;"></i>
-                        <h5 style="text-transform: uppercase; letter-spacing: 1px;">Growth Mastery</h5>
+                <div class="process-grid stagger-reveal">
+                    <div class="process-step">
+                        <div class="step-number">01</div>
+                        <h3>Dream</h3>
+                        <p>The planner breaks your big dreams into actionable daily subtasks.</p>
                     </div>
-                    <div class="mastery-rank-box">
-                        <div id="user-rank" class="rank-name">Loading...</div>
-                        <div class="rank-label">CURRENT STATUS</div>
+                    <div class="process-step">
+                        <div class="step-number">02</div>
+                        <h3>Retrieve</h3>
+                        <p>Milvus VDB pulls historical patterns and user preferences.</p>
                     </div>
-                    <div class="xp-stats">
-                        <div class="xp-top">
-                            <span class="level-badge">LVL <span id="user-level">1</span></span>
-                            <span class="xp-count"><span id="user-xp">0</span> XP</span>
+                    <div class="process-step">
+                        <div class="step-number">03</div>
+                        <h3>Execute</h3>
+                        <p>The agent handles the digital legwork through high-fidelity mimicry.</p>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">04</div>
+                        <h3>Achieve</h3>
+                        <p>System learns your preferences to optimize every future goal.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="modules" style="padding: 100px 10%; background: rgba(255,255,255,0.02);">
+                <div class="section-header reveal" style="text-align: center;">
+                    <h2>Lifestyle Engine Core</h2>
+                </div>
+                <div class="features stagger-reveal" style="padding: 0;">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i data-lucide="brain"></i></div>
+                        <h3>Life Planner</h3>
+                        <p>Derives optimal paths for your unique personal objectives and lifestyle.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i data-lucide="mouse-pointer-2"></i></div>
+                        <h3>Interaction Engine</h3>
+                        <p>Reinforcement learning models that handle real-time UI interaction and peripheral control.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i data-lucide="database"></i></div>
+                        <h3>Habit Vault</h3>
+                        <p>Safe Milvus vector storage for your personal behavioral patterns and progress.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="milvus" class="milvus-section reveal">
+                <div class="milvus-content">
+                    <h2 style="margin: 1.5rem 0;">A Personal Brain for Your Goals</h2>
+                    <p style="color: var(--text-dim); margin-bottom: 2rem;">The Assistant doesn't just plan; it remembers. Your previous successes and preferences are vectorized and stored, creating a personalized blueprint for everything you want to achieve.</p>
+                    <ul style="list-style: none; color: white;">
+                        <li style="margin-bottom: 1rem;"><i data-lucide="check" style="width: 16px; color: hsla(var(--accent), 1);"></i> Intelligent preference retrieval</li>
+                        <li style="margin-bottom: 1rem;"><i data-lucide="check" style="width: 16px; color: hsla(var(--accent), 1);"></i> Cross-device habit syncing</li>
+                        <li style="margin-bottom: 1rem;"><i data-lucide="check" style="width: 16px; color: hsla(var(--accent), 1);"></i> Secure, private personal data memory</li>
+                    </ul>
+                </div>
+                <div class="milvus-visual">
+                    <div class="neural-node" style="top: 20%; left: 30%;"></div>
+                    <div class="neural-node" style="top: 60%; left: 10%; animation-delay: 0.5s;"></div>
+                    <div class="neural-node" style="top: 40%; left: 80%; animation-delay: 1s;"></div>
+                    <div class="neural-node" style="top: 80%; left: 50%; animation-delay: 1.5s;"></div>
+                    <div class="neural-node" style="top: 10%; left: 70%; animation-delay: 0.2s;"></div>
+                    <svg style="position: absolute; width: 100%; height: 100%; opacity: 0.2;">
+                        <line x1="30%" y1="20%" x2="70%" y2="10%" stroke="white" stroke-width="1" />
+                        <line x1="30%" y1="20%" x2="10%" y2="60%" stroke="white" stroke-width="1" />
+                        <line x1="70%" y1="10%" x2="80%" y2="40%" stroke="white" stroke-width="1" />
+                        <line x1="10%" y1="60%" x2="50%" y2="80%" stroke="white" stroke-width="1" />
+                        <line x1="80%" y1="40%" x2="50%" y2="80%" stroke="white" stroke-width="1" />
+                    </svg>
+                </div>
+            </section>
+
+            <section id="use-cases" style="padding: 100px 10%;">
+                <div class="section-header reveal" style="text-align: center;">
+                    <h2>Personal Missions</h2>
+                    <p>From micro-habits to life-changing transformations.</p>
+                </div>
+                <div class="use-cases-grid stagger-reveal">
+                    <div class="use-case-card">
+                        <div class="use-case-img"><i data-lucide="heart" style="width: 40px; height: 40px;"></i></div>
+                        <div class="use-case-content">
+                            <h4>Health & Wellness</h4>
+                            <p>Automate your fitness journey, from meal prep scheduling to tracking your morning routines.</p>
                         </div>
-                        <div class="xp-bar-bg">
-                            <div id="xp-bar-fill" class="xp-bar-fill"></div>
+                    </div>
+                    <div class="use-case-card">
+                        <div class="use-case-img"><i data-lucide="book-open" style="width: 40px; height: 40px;"></i></div>
+                        <div class="use-case-content">
+                            <h4>Skill Acquisition</h4>
+                            <p>Master new languages or instruments with an agent that finds resources and builds your curriculum.</p>
                         </div>
-                        <div class="xp-footer">
-                            <span id="xp-to-next">0 XP to next level</span>
+                    </div>
+                    <div class="use-case-card">
+                        <div class="use-case-img"><i data-lucide="clapperboard" style="width: 40px; height: 40px;"></i></div>
+                        <div class="use-case-content">
+                            <h4>Lifestyle Logistics</h4>
+                            <p>Offload the "admin of life"—travel planning, appointment booking, and gift reminders.</p>
                         </div>
                     </div>
                 </div>
+            </section>
 
-                <div id="history-section" class="card reveal" style="margin-top: 1.5rem; background: rgba(255,255,255,0.03);">
-                    <div class="panel-header">
-                        <i data-lucide="history" style="width: 16px; color: hsla(var(--primary), 1);"></i>
-                        <h5 style="text-transform: uppercase; letter-spacing: 1px;">Recent Missions</h5>
-                    </div>
-                    <div id="mission-history-list" style="display: flex; flex-direction: column; gap: 0.5rem; padding: 1rem;">
-                        <!-- History items will be injected here -->
-                    </div>
-                </div>
+            <div class="mission-cta reveal" style="padding: 100px 10%; text-align: center; background: rgba(255,255,255,0.02);">
+                <a href="#/console" class="btn btn-primary btn-large">
+                    <span>GET STARTED</span>
+                    <i data-lucide="arrow-right"></i>
+                </a>
             </div>
+        </section> <!-- End page-home -->
 
-            <!-- Agent Control Center -->
-            <div class="card main-control-card">
-                <form id="rl-agent-form">
-                    <div class="input-container">
-                        <label for="goal">
-                            <i data-lucide="sparkles" style="width: 16px;"></i>
-                            Your Personal Mission
-                        </label>
-                        <input type="text" id="goal" name="goal" placeholder="e.g. Plan a 3-month marathon training program for a beginner..." required>
+        <!-- Mission Console Page -->
+        <section id="page-console" class="page-content">
+            <div id="app-section" class="app-container">
+                <header class="section-header reveal">
+                    <div class="header-content">
+                        <label>Mission Control Center</label>
+                        <h2>Initiate <span>Autonomous</span> Goal Extraction</h2>
+                        <p>Enter your high-level objective. Our RL agents will decompose, strategize, and execute.</p>
                     </div>
+                </header>
 
-                    <div class="intensity-group">
-                        <label style="margin-bottom: 0.5rem; display: block; font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px;">Mission Intensity</label>
-                        <div class="intensity-options">
-                            <label class="intensity-option">
-                                <input type="radio" name="intensity" value="blitz">
-                                <span>⚡ Blitz</span>
-                            </label>
-                            <label class="intensity-option">
-                                <input type="radio" name="intensity" value="balanced" checked>
-                                <span>🛡️ Balanced</span>
-                            </label>
-                            <label class="intensity-option">
-                                <input type="radio" name="intensity" value="mastery">
-                                <span>💎 Mastery</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="persona-group" style="margin-top: 1.5rem;">
-                        <label style="margin-bottom: 0.5rem; display: block; font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px;">Agent Persona</label>
-                        <div class="persona-options">
-                            <label class="persona-option" title="The Strategist: Professional & Logical">
-                                <input type="radio" name="persona" value="strategist" checked>
-                                <div class="persona-box">
-                                    <i data-lucide="brain"></i>
-                                    <span>Strategist</span>
+                <div class="app-grid reveal">
+                    <!-- Mastery Sidebar -->
+                    <div class="mastery-sidebar">
+                        <div class="card mastery-widget">
+                            <div class="panel-header">
+                                <i data-lucide="award" style="color: hsla(var(--accent), 1); width: 16px;"></i>
+                                <h5>Growth Mastery</h5>
+                            </div>
+                            <div class="mastery-rank-box">
+                                <div id="user-rank" class="rank-name">Loading...</div>
+                                <div class="rank-label">CURRENT STATUS</div>
+                            </div>
+                            <div class="xp-stats">
+                                <div class="xp-top">
+                                    <span class="level-badge">LVL <span id="user-level">1</span></span>
+                                    <span class="xp-count"><span id="user-xp">0</span> XP</span>
                                 </div>
-                            </label>
-                            <label class="persona-option" title="The Sergeant: High-Intensity & Direct">
-                                <input type="radio" name="persona" value="sergeant">
-                                <div class="persona-box">
+                                <div class="xp-bar-bg">
+                                    <div id="xp-bar-fill" class="xp-bar-fill"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="history-section" class="card" style="margin-top: 1.5rem;">
+                            <div class="panel-header">
+                                <i data-lucide="history" style="width: 16px; color: hsla(var(--primary), 1);"></i>
+                                <h5>Recent Missions</h5>
+                            </div>
+                            <div id="mission-history-list" class="history-list">
+                                <!-- History items -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Form -->
+                    <div class="card main-control-card">
+                        <form id="rl-agent-form" class="agent-form">
+                            <div class="input-group">
+                                <label for="goal">Mission Objective</label>
+                                <div class="input-wrapper">
                                     <i data-lucide="target"></i>
-                                    <span>Sergeant</span>
+                                    <input type="text" id="goal" name="goal" placeholder="e.g. Master Three.js and build a 3D portfolio" required>
                                 </div>
-                            </label>
-                            <label class="persona-option" title="The Zen Sensei: Mindful & Sustainable">
-                                <input type="radio" name="persona" value="zen">
-                                <div class="persona-box">
-                                    <i data-lucide="wind"></i>
-                                    <span>Zen</span>
+                            </div>
+
+                            <div class="settings-group" style="margin-top: 2rem;">
+                                <label>Operational Parameters</label>
+                                <div class="parameter-grid">
+                                    <div class="parameter-card">
+                                        <label>Intensity</label>
+                                        <div class="intensity-options">
+                                            <label class="intensity-option">
+                                                <input type="radio" name="intensity" value="low" checked>
+                                                <span>Focus</span>
+                                            </label>
+                                            <label class="intensity-option">
+                                                <input type="radio" name="intensity" value="medium">
+                                                <span>Momentum</span>
+                                            </label>
+                                            <label class="intensity-option">
+                                                <input type="radio" name="intensity" value="high">
+                                                <span>Overdrive</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="parameter-card">
+                                        <label>Persona</label>
+                                        <div class="intensity-options">
+                                            <label class="intensity-option">
+                                                <input type="radio" name="persona" value="strategist" checked>
+                                                <span>Strategist</span>
+                                            </label>
+                                            <label class="intensity-option">
+                                                <input type="radio" name="persona" value="sergeant">
+                                                <span>Sergeant</span>
+                                            </label>
+                                            <label class="intensity-option">
+                                                <input type="radio" name="persona" value="zen">
+                                                <span>Zen</span>
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
-                            </label>
-                            <label class="persona-option" title="The Optimizer: Data-Driven & Leverage-Focused">
-                                <input type="radio" name="persona" value="optimizer">
-                                <div class="persona-box">
-                                    <i data-lucide="zap"></i>
-                                    <span>Optimizer</span>
+                            </div>
+
+                            <div class="backend-settings" style="margin-top: 2rem;">
+                                <div id="settings-trigger" class="settings-toggle" style="display: flex; align-items: center; gap: 0.5rem; color: hsla(var(--primary), 1); cursor: pointer; margin-bottom: 1rem; font-size: 0.8rem; font-weight: 700;">
+                                    <i data-lucide="sliders" style="width: 14px;"></i>
+                                    SYSTEM PARAMETERS
                                 </div>
-                            </label>
+                                <div id="settings-panel" style="max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out;">
+                                    <label for="backend-url">Node Endpoint</label>
+                                    <input type="text" id="backend-url" value="http://localhost:5000">
+                                </div>
+                            </div>
+
+                            <button type="submit" id="submit-btn" class="btn btn-primary btn-large" style="width: 100%; margin-top: 2rem; justify-content: center;">
+                                <span>LAUNCH MISSION</span>
+                                <i data-lucide="send"></i>
+                            </button>
+                        </form>
+                        <div id="connection-status" class="status-badge" style="display: none; margin-top: 1rem;">Connecting...</div>
+                    </div>
+                </div>
+
+                <div id="processing-view" class="processing-view" style="display: none;">
+                    <div class="loader-visual">
+                        <div class="orbit"></div>
+                        <div class="core"></div>
+                    </div>
+                    <h3>Synchronizing with Neural Archive...</h3>
+                    <p>Generating mission-critical subtasks using reinforcement learning.</p>
+                </div>
+
+                <div id="mission-report-section" class="mission-report reveal" style="display: none; margin-top: 3rem;">
+                    <div class="report-header">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <i data-lucide="file-check" style="width: 20px; color: hsla(var(--accent), 1);"></i>
+                            <h4>Final Mission Report</h4>
+                        </div>
+                        <div class="report-actions">
+                            <button id="copy-report-btn" class="btn-icon"><i data-lucide="copy" style="width: 16px;"></i></button>
+                            <button id="download-report-btn" class="btn-icon"><i data-lucide="download" style="width: 16px;"></i></button>
                         </div>
                     </div>
-                    
-                    <div id="settings-trigger" class="settings-toggle" style="display: flex; align-items: center; gap: 0.5rem; color: hsla(var(--primary), 1); cursor: pointer; margin-bottom: 1.5rem; font-size: 0.8rem; font-weight: 700;">
-                        <i data-lucide="sliders" style="width: 14px;"></i>
-                        SYSTEM PARAMETERS
-                    </div>
-
-                    <div id="settings-panel" style="max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out;">
-                        <div class="input-container" style="margin-top: 1rem;">
-                            <label for="backend-url">Node Endpoint</label>
-                            <input type="text" id="backend-url" value="http://localhost:5000" placeholder="http://localhost:5000">
-                        </div>
-                    </div>
-
-                    <button type="submit" id="submit-btn" class="btn btn-primary" style="width: 100%; justify-content: center; display: flex; align-items: center; gap: 1rem;">
-                        <i data-lucide="play" style="width: 18px;"></i>
-                        START YOUR JOURNEY
-                    </button>
-                </form>
-                <div id="connection-status" class="status-badge" style="display: none; margin-top: 1rem; text-align: center; width: 100%;">Connecting...</div>
-            </div>
-        </div>
-
-            <div id="processing-view" style="display: none; text-align: center; padding: 4rem 0;">
-                <div class="loader-circle"></div>
-                <p id="processing-text" style="color: var(--text-dim); margin-top: 1.5rem; font-weight: 500; letter-spacing: 1px;">CALIBRATING PERSONAL MISSION...</p>
-            </div>
-
-
-
-            <div class="output-grid" style="display: none;">
-
-                <div class="glass-panel">
-                    <div class="panel-header">
-                        <i data-lucide="terminal" style="width: 16px; color: hsla(var(--accent), 1);"></i>
-                        <h5>Execution Stream</h5>
-                    </div>
-                    <div id="output" class="scroll-viewport"></div>
+                    <div id="report-content" class="document-view"></div>
                 </div>
-                
-                <div class="glass-panel">
-                    <div class="panel-header">
-                        <i data-lucide="git-branch" style="width: 16px; color: hsla(var(--accent), 1);"></i>
-                        <h5>Strategic Roadmap</h5>
+
+                <div id="final-card" class="card" style="margin-top: 2rem; display: none; text-align: center;">
+                    <div id="result" style="font-weight: 800; font-size: 1.2rem;"></div>
+                </div>
+
+                <div class="console-output-grid" style="margin-top: 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="glass-panel">
+                        <div class="panel-header">Execution Stream</div>
+                        <div id="output" class="scroll-viewport" style="height: 200px; overflow-y: auto;"></div>
                     </div>
-                    <div id="subtasks" class="scroll-viewport"></div>
+                    <div class="glass-panel">
+                        <div class="panel-header">Roadmap</div>
+                        <div id="subtasks" class="scroll-viewport" style="height: 200px; overflow-y: auto;"></div>
+                    </div>
                 </div>
             </div>
+        </section>
 
-            <!-- New Mission Report Section -->
-            <div id="mission-report-section" class="card reveal" style="margin-top: 3rem; display: none; border-color: hsla(var(--accent), 0.3);">
-                <div class="panel-header" style="justify-content: space-between;">
-                    <div style="display: flex; align-items: center; gap: 0.75rem;">
-                        <i data-lucide="file-check" style="width: 20px; color: hsla(var(--accent), 1);"></i>
-                        <h4 style="text-transform: uppercase; letter-spacing: 2px;">Final Mission Report</h4>
-                    </div>
-                    <div class="report-actions">
-                        <button id="copy-report-btn" class="btn-icon"><i data-lucide="copy" style="width: 16px;"></i></button>
-                        <button id="download-report-btn" class="btn-icon"><i data-lucide="download" style="width: 16px;"></i></button>
-                    </div>
+        <!-- ── ZENITH GROWTH LAB ── -->
+        <section id="page-lab" class="page-content">
+            <div class="page-header-bar">
+                <a href="#/" class="page-back-btn"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i> Home</a>
+                <div class="page-header-title">
+                    <span class="page-header-eyebrow">Growth Analytics</span>
+                    <span class="page-header-name">Zenith Growth Lab</span>
                 </div>
-                
-                <div class="progress-bar-container" style="margin: 1.5rem 2rem 0; background: rgba(255,255,255,0.05); height: 8px; border-radius: 100px; overflow: hidden; display: none;" id="mission-progress-parent">
-                    <div id="mission-progress-fill" style="width: 0%; height: 100%; background: linear-gradient(to right, hsla(var(--primary), 1), hsla(var(--accent), 1)); transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 15px hsla(var(--accent), 0.5);"></div>
-                </div>
-                
-                <div id="report-content" class="document-view">
-                    <!-- Synthesized Plan will appear here -->
-                </div>
+                <button class="page-action-btn" onclick="window.zenithLab?.refresh()">
+                    <i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> Refresh Data
+                </button>
             </div>
-
-            <div id="final-card" class="card" style="margin-top: 3rem; text-align: center; border-color: rgba(63, 185, 80, 0.2); display: none;">
-                <label style="justify-content: center; margin-bottom: 1rem; color: #3fb950;">
-                    <i data-lucide="check-circle" style="width: 16px;"></i>
-                    Final Resolution
-                </label>
-                <div id="result" style="font-size: 1.25rem; font-weight: 800; color: white;">
-                    Standby - Awaiting Command
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Zenith Growth Lab Overlay -->
-    <div id="lab-overlay" class="lab-overlay">
-        <div class="lab-header">
-            <div class="logo">ZENITH.LAB</div>
-            <button id="close-lab" class="btn-icon"><i data-lucide="x"></i></button>
-        </div>
-        
-        <div class="lab-content zenith-grid">
-            <!-- Left Column: Telemetry -->
-            <div class="lab-sidebar">
-                <div class="lab-card reveal active">
-                    <div class="panel-header">
-                        <i data-lucide="activity" style="color: hsla(var(--accent), 1);"></i>
+            <div class="lab-content zenith-grid">
+                <div class="lab-sidebar">
+                    <div class="lab-card">
                         <h5>Performance Pulse</h5>
-                    </div>
-                    <canvas id="growth-chart" style="max-height: 200px;"></canvas>
-                    <div id="lab-stats" class="lab-mini-stats">
-                        <!-- Stats injected here -->
+                        <canvas id="growth-chart"></canvas>
+                        <div id="lab-stats"></div>
                     </div>
                 </div>
-                <div class="lab-card reveal active telemetry-panel">
-                    <div class="panel-header">
-                        <i data-lucide="cpu" style="color: hsla(var(--accent), 1);"></i>
-                        <h5>System Telemetry</h5>
-                    </div>
-                    <div class="telemetry-data">
-                        <div class="telemetry-row"><span>Agent Status</span><span class="status-ok">ONLINE</span></div>
-                        <div class="telemetry-row"><span>Milvus Sync</span><span class="status-ok">STABLE</span></div>
-                        <div class="telemetry-row"><span>Vector Load</span><span>42.8ms</span></div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Center Column: 3D Topology -->
-            <div class="lab-main">
-                <div class="lab-card main-topology reveal active" style="height: 100%;">
-                    <div class="panel-header">
-                        <i data-lucide="webhook" style="color: hsla(var(--accent), 1);"></i>
-                        <h5>Mission Topology (3D Vision)</h5>
-                    </div>
+                <div class="lab-main">
                     <div id="topology-container" class="topology-canvas"></div>
                 </div>
-            </div>
-
-            <!-- Right Column: Reasoning Stream -->
-            <div class="lab-sidebar right-sidebar">
-                <div class="lab-card reveal active" style="height: 100%;">
-                    <div class="panel-header">
-                        <i data-lucide="binary" style="color: hsla(var(--primary), 1);"></i>
-                        <h5>Neural Reasoning Stream</h5>
-                    </div>
+                <div class="lab-sidebar right-sidebar">
                     <div id="reasoning-stream" class="reasoning-feed"></div>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <!-- Quantum Forge Overlay -->
-    <div id="forge-overlay" class="lab-overlay forge-overlay">
-        <div class="lab-header">
-            <div class="logo" style="background: linear-gradient(135deg, #fff, #bf9eff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">QUANTUM.FORGE</div>
-            <div style="display: flex; gap: 1rem;">
-                <button id="refresh-forge" class="btn-icon"><i data-lucide="refresh-cw"></i></button>
-                <button id="close-forge" class="btn-icon"><i data-lucide="x"></i></button>
-            </div>
-        </div>
-        
-        <div class="lab-content forge-grid">
-            <!-- Top Half: 3D Constellation -->
-            <div class="forge-hero">
-                <div class="lab-card main-topology reveal active" style="border-color: rgba(191, 158, 255, 0.3);">
-                    <div class="panel-header">
-                        <i data-lucide="layout" style="color: #bf9eff;"></i>
-                        <h5>Habit Constellation (3D Mapping)</h5>
-                    </div>
-                    <div id="constellation-container" class="topology-canvas" style="background: radial-gradient(circle at center, rgba(191, 158, 255, 0.05) 0%, transparent 70%); min-height: 350px;"></div>
+        <!-- ── QUANTUM FORGE ── -->
+        <section id="page-forge" class="page-content">
+            <div class="page-header-bar">
+                <a href="#/" class="page-back-btn"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i> Home</a>
+                <div class="page-header-title">
+                    <span class="page-header-eyebrow">Habit Architecture</span>
+                    <span class="page-header-name">Quantum Forge</span>
                 </div>
+                <button class="page-action-btn" onclick="window.quantumForge?.loadData()">
+                    <i data-lucide="zap" style="width:14px;height:14px;"></i> Sync Forecast
+                </button>
             </div>
-            
-            <!-- Bottom Half: Simulator & Input -->
-            <div class="forge-dashboard">
-                <div class="lab-card reveal active" style="border-color: rgba(191, 158, 255, 0.3);">
-                    <div class="panel-header">
-                        <i data-lucide="zap" style="color: #bf9eff;"></i>
-                        <h5>Future Self Simulator</h5>
-                    </div>
-                    <div id="forge-prediction" class="document-view" style="font-size: 0.85rem; padding: 1.5rem; flex-grow: 1;">
-                        Awaiting neural data to simulate your potential...
-                    </div>
-                </div>
+            <div class="lab-content forge-grid">
+                <!-- Constellation Visualization -->
+                <div id="constellation-container" class="topology-canvas"></div>
 
-                <div class="lab-card reveal active" style="border-color: rgba(191, 158, 255, 0.3);">
-                    <div class="panel-header">
-                        <i data-lucide="terminal" style="color: #bf9eff;"></i>
-                        <h5>Behavioral Input Console</h5>
+                <!-- Habit Dashboard -->
+                <div class="forge-dashboard">
+                    <!-- Active Habits List -->
+                    <div class="lab-card">
+                        <div class="panel-header">
+                            <i data-lucide="zap" style="width:16px;color:#bf9eff"></i>
+                            <h5>Active Habits</h5>
+                        </div>
+                        <div id="habit-active-list" style="display:flex;flex-direction:column;gap:0.75rem;min-height:80px;">
+                            <div style="color:var(--text-dim);font-size:0.85rem;">No habits forged yet.</div>
+                        </div>
                     </div>
-                    <form id="new-habit-form" class="forge-terminal-form">
-                        <div class="terminal-input-group">
-                            <span class="prompt">_habit ></span>
-                            <input type="text" id="habit-name" placeholder="Name (e.g. Meditation)" required>
+
+                    <!-- Predictions -->
+                    <div class="lab-card">
+                        <div class="panel-header">
+                            <i data-lucide="trending-up" style="width:16px;color:#bf9eff"></i>
+                            <h5>Neural Projections</h5>
                         </div>
-                        <div class="terminal-input-group">
-                            <span class="prompt">_cue ></span>
-                            <input type="text" id="habit-cue" placeholder="Trigger (e.g. After coffee)">
+                        <div id="forge-prediction" class="document-view" style="font-size:0.85rem;">Forge a habit to see predictions...</div>
+                    </div>
+
+                    <!-- New Habit Form -->
+                    <div class="lab-card" style="grid-column:1/-1;">
+                        <div class="panel-header">
+                            <i data-lucide="plus-circle" style="width:16px;color:#bf9eff"></i>
+                            <h5>Engrave New Habit</h5>
                         </div>
-                        <button type="submit" class="btn btn-primary forge-btn" style="background: #bf9eff; box-shadow: 0 5px 15px rgba(191, 158, 255, 0.3); border: none; width: 100%; justify-content: center; margin-top: 1rem;">ENGRAVE HABIT</button>
-                    </form>
-                    <div id="habit-active-list" class="habit-list-container" style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; overflow-y: auto; max-height: 200px;">
-                        <!-- Habit list items -->
+                        <form id="new-habit-form" class="forge-terminal-form">
+                            <input type="text" id="habit-name" placeholder="Habit name (e.g. Morning Run)" required>
+                            <input type="text" id="habit-cue" placeholder="Trigger cue (e.g. After breakfast)">
+                            <button type="submit" class="btn btn-primary" style="justify-content:center;">ENGRAVE HABIT</button>
+                        </form>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
+
+        <!-- ── AURA NEXUS ── -->
+        <section id="page-aura" class="page-content">
+            <div class="page-header-bar">
+                <a href="#/" class="page-back-btn"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i> Home</a>
+                <div class="page-header-title">
+                    <span class="page-header-eyebrow">Personality Resonance</span>
+                    <span class="page-header-name">Aura Nexus</span>
+                </div>
+                <button class="page-action-btn" onclick="window.auraNexus?.rescan()">
+                    <i data-lucide="sparkles" style="width:14px;height:14px;"></i> Rescan Aura
+                </button>
+            </div>
+            <div class="aura-grid">
+                <div id="aura-canvas-container" class="aura-canvas"></div>
+                <div class="aura-content-panel">
+                    <div style="font-size:0.7rem;letter-spacing:3px;color:var(--text-dim);text-transform:uppercase;">Your Resonance Profile</div>
+                    <h2 id="aura-type-label" style="font-size:2.5rem;font-weight:900;margin:1rem 0;background:linear-gradient(to right,#fff,#00d2ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">AURA NEXUS</h2>
+                    <p id="aura-info-text" style="color:var(--text-dim);line-height:1.7;margin-bottom:2rem;">Analyzing your mission profile to determine aura resonance...</p>
+                    <div id="aura-stats-grid" style="display:flex;flex-direction:column;gap:1rem;"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── NEURAL ARCHIVE ── -->
+        <section id="page-archive" class="page-content">
+            <div class="page-header-bar">
+                <a href="#/" class="page-back-btn"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i> Home</a>
+                <div class="page-header-title">
+                    <span class="page-header-eyebrow">Expert Knowledge Base</span>
+                    <span class="page-header-name">Neural Archive</span>
+                </div>
+                <div class="page-header-hint">
+                    <i data-lucide="mouse-pointer" style="width:14px;height:14px;opacity:0.6;"></i>
+                    <span>Click nodes to explore</span>
+                </div>
+            </div>
+            <div class="archive-grid">
+                <div id="archive-canvas-container" class="archive-canvas"></div>
+                <div id="knowledge-detail-content" class="knowledge-view">
+                    <div class="knowledge-intro">
+                        <h5>Select a Node</h5>
+                        <p style="color:var(--text-dim);margin-top:1rem;">Click any sphere in the 3D visualization to view detailed knowledge steps.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── CHRONOS ENGINE ── -->
+        <section id="page-chronos" class="page-content">
+            <div class="page-header-bar">
+                <a href="#/" class="page-back-btn"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i> Home</a>
+                <div class="page-header-title">
+                    <span class="page-header-eyebrow">Temporal Optimization</span>
+                    <span class="page-header-name">Chronos Engine</span>
+                </div>
+                <button class="page-action-btn" onclick="window.chronosEngine?.sync()">
+                    <i data-lucide="clock" style="width:14px;height:14px;"></i> Sync Schedule
+                </button>
+            </div>
+            <div class="chronos-grid">
+                <div id="chronos-canvas-container" class="chronos-canvas"></div>
+                <div id="chronos-schedule-list" style="display:flex;flex-direction:column;gap:0.5rem;"></div>
+            </div>
+        </section>
+
+    </main>
 
     <footer style="background: rgba(0,0,0,0.3); border-top: 1px solid var(--border); padding: 80px 10% 40px;">
         <div class="footer-grid">
             <div class="footer-about">
                 <div class="logo">GOAL.PERSONAL</div>
-                <p style="color: var(--text-dim); margin-top: 1.5rem; max-width: 300px;">The world's first autonomous personal goal execution system. Reclaiming your time for what matters most.</p>
+                <p>&copy; 2026 Personal Goal Assistant. All rights reserved.</p>
                 <div class="footer-socials">
-                    <a href="https://www.linkedin.com/in/hemang-joshi-046746aa" class="social-icon"><i data-lucide="linkedin"></i></a>
-                    <a href="https://github.com/hemangjoshi37a" class="social-icon"><i data-lucide="github"></i></a>
-                    <a href="https://twitter.com/HemangJ81509525" class="social-icon"><i data-lucide="twitter"></i></a>
-                    <a href="mailto:hemangjoshi37a@gmail.com" class="social-icon"><i data-lucide="mail"></i></a>
+                    <a href="#" class="social-icon"><i data-lucide="github"></i></a>
+                    <a href="#" class="social-icon"><i data-lucide="twitter"></i></a>
+                    <a href="#" class="social-icon"><i data-lucide="linkedin"></i></a>
                 </div>
             </div>
-            <div class="footer-nav">
-                <h5 style="margin-bottom: 1.5rem; color: white;">Platform</h5>
-                <ul style="list-style: none; color: var(--text-dim); line-height: 2;">
-                    <li><a href="#how-it-works" style="color: inherit; text-decoration: none;">How it works</a></li>
-                    <li><a href="#modules" style="color: inherit; text-decoration: none;">Core Modules</a></li>
-                    <li><a href="#app-section" style="color: inherit; text-decoration: none;">Agent Console</a></li>
-                </ul>
-            </div>
-            <div class="footer-nav">
-                <h5 style="margin-bottom: 1.5rem; color: white;">Resources</h5>
-                <ul style="list-style: none; color: var(--text-dim); line-height: 2;">
-                    <li><a href="https://milvus.io/docs" style="color: inherit; text-decoration: none;">Milvus Docs</a></li>
-                    <li><a href="#" style="color: inherit; text-decoration: none;">RL Architectures</a></li>
-                    <li><a href="#" style="color: inherit; text-decoration: none;">API Access</a></li>
-                </ul>
-            </div>
-            <div class="footer-nav">
-                <h5 style="margin-bottom: 1.5rem; color: white;">Community</h5>
-                <ul style="list-style: none; color: var(--text-dim); line-height: 2;">
-                    <li><a href="https://t.me/hjlabs" style="color: inherit; text-decoration: none;">Telegram</a></li>
-                    <li><a href="https://wa.me/917016525813" style="color: inherit; text-decoration: none;">WhatsApp</a></li>
-                    <li><a href="http://hemangjoshi.blogspot.com" style="color: inherit; text-decoration: none;">Blog</a></li>
-                </ul>
-            </div>
-        </div>
-        <div style="text-align: center; padding-top: 40px; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 0.8rem;">
-            <p>&copy; 2026 Personal Goal Assistant. All rights reserved.</p>
         </div>
     </footer>
 
-    <!-- Vite Entry Point -->
     <script type="module" src="/main.js"></script>
 </body>
 </html>
