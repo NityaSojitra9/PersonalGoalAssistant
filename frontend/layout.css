@@ -171,13 +171,15 @@ nav.scrolled {
 
 /* Feature Pages — normal scrollable pages, not overlays */
 #page-lab, #page-forge, #page-aura, #page-archive, #page-chronos, #page-console,
-#page-momentum, #page-oracle, #page-gauntlet {
+#page-momentum, #page-oracle, #page-gauntlet,
+#page-login, #page-signup, #page-onboarding, #page-profile {
     padding: 120px 5% 80px;
     min-height: 100vh;
     background: var(--bg-color);
 }
 
-#page-home.active {
+#page-landing.active,
+#page-dashboard.active {
     display: block;
 }
 

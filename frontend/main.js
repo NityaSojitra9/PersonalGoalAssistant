@@ -194,6 +194,11 @@ class AppController {
             const target = e.target.closest('a, button');
             if (!target) return;
 
+            if (target.classList.contains('global-logout-btn')) {
+                this.handleLogout();
+                return;
+            }
+
             // Section link handling: smooth-scroll to in-page anchors
             const href = target.getAttribute('href') || '';
             if (href.startsWith('#') && !href.startsWith('#/')) {
@@ -267,7 +272,7 @@ class AppController {
         const hash = window.location.hash || '#/';
         
         // Auth Guard
-        const guestRoutes = ['#/', '', '#/login', '#/signup'];
+        const guestRoutes = ['#/', '', '#', '#/login', '#/signup'];
         if (!this.user && !guestRoutes.includes(hash)) {
             window.location.hash = '#/login';
             return;
@@ -290,8 +295,15 @@ class AppController {
         window.scrollTo(0, 0);
 
         // Route mapping
-        if (hash === '#/' || hash === '') {
-            document.getElementById('page-home').classList.add('active');
+        if (hash === '#/' || hash === '' || hash === '#') {
+            if (this.user) {
+                window.location.hash = '#/dashboard';
+                return;
+            } else {
+                document.getElementById('page-landing').classList.add('active');
+            }
+        } else if (hash === '#/dashboard') {
+            document.getElementById('page-dashboard').classList.add('active');
         } else if (hash === '#/console') {
             document.getElementById('page-console').classList.add('active');
         } else if (hash === '#/lab') {
@@ -368,8 +380,13 @@ class AppController {
     updateNav() {
         if (!this.dom.navAuthGroup) return;
         
+        // Toggle feature visibility
+        document.querySelectorAll('.guest-only').forEach(el => el.style.display = this.user ? 'none' : '');
+        document.querySelectorAll('.auth-only').forEach(el => el.style.display = this.user ? '' : 'none');
+        
         if (this.user) {
             this.dom.navAuthGroup.innerHTML = `
+                <a href="#/dashboard" class="btn btn-secondary">Dashboard</a>
                 <a href="#/console" class="btn btn-primary">Console</a>
                 <a href="#/profile" class="nav-profile-link" style="display: flex; align-items: center; gap: 0.5rem; color: white; text-decoration: none; font-weight: 600;">
                     <div style="width: 32px; height: 32px; border-radius: 50%; background: hsla(var(--primary), 0.2); border: 1px solid hsla(var(--primary), 0.5); display: flex; align-items: center; justify-content: center; font-size: 0.8rem;">
@@ -377,6 +394,7 @@ class AppController {
                     </div>
                     <span>${this.user.username}</span>
                 </a>
+                <button class="btn-icon global-logout-btn" aria-label="Logout" style="color: #ff4d4d; margin-left: 0.5rem;"><i data-lucide="log-out" style="width: 18px;"></i></button>
             `;
         } else {
             this.dom.navAuthGroup.innerHTML = `
@@ -400,7 +418,7 @@ class AppController {
             this.user = data.user;
             this.updateNav();
             window.notifications.show(`Welcome back, ${this.user.username}`, 'success');
-            window.location.hash = this.user.has_completed_onboarding ? '#/console' : '#/onboarding';
+            window.location.hash = this.user.has_completed_onboarding ? '#/dashboard' : '#/onboarding';
         } catch (err) {
             alert(err.message);
         } finally {

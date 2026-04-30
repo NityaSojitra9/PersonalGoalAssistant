@@ -38,11 +38,11 @@
             <a href="#" class="logo">GOAL.PERSONAL</a>
             
             <div class="nav-links">
-                <a href="#how-it-works" class="nav-section-link"><i data-lucide="layers" style="width: 14px; margin-right: 6px;"></i>Process</a>
-                <a href="#modules" class="nav-section-link"><i data-lucide="box" style="width: 14px; margin-right: 6px;"></i>Modules</a>
-                <a href="#use-cases" class="nav-section-link"><i data-lucide="compass" style="width: 14px; margin-right: 6px;"></i>Capabilities</a>
+                <a href="#how-it-works" class="nav-section-link guest-only"><i data-lucide="layers" style="width: 14px; margin-right: 6px;"></i>Process</a>
+                <a href="#modules" class="nav-section-link guest-only"><i data-lucide="box" style="width: 14px; margin-right: 6px;"></i>Modules</a>
+                <a href="#use-cases" class="nav-section-link guest-only"><i data-lucide="compass" style="width: 14px; margin-right: 6px;"></i>Capabilities</a>
                 
-                <div class="dropdown">
+                <div class="dropdown auth-only">
                     <div class="dropdown-trigger">
                         <span>Strategic Lab</span>
                         <i data-lucide="chevron-down" style="width: 14px;"></i>
@@ -76,24 +76,27 @@
             <div class="logo">MENU</div>
             <button id="close-drawer" class="btn-icon" style="color: white;"><i data-lucide="x"></i></button>
         </div>
-        <a href="#how-it-works" class="drawer-link nav-section-link">Process</a>
-        <a href="#modules" class="drawer-link nav-section-link">Modules</a>
-        <a href="#use-cases" class="drawer-link nav-section-link">Capabilities</a>
-        <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 1rem 0;" class="nav-section-link"></div>
-        <a href="#/lab" class="drawer-link">Zenith Lab</a>
-        <a href="#/forge" class="drawer-link">Quantum Forge</a>
-        <a href="#/aura" class="drawer-link">Aura Nexus</a>
-        <a href="#/archive" class="drawer-link">Neural Archive</a>
-        <a href="#/chronos" class="drawer-link">Chronos Engine</a>
-        <div style="height:1px;background:rgba(255,255,255,0.1);margin:0.5rem 0;"></div>
-        <a href="#/momentum" class="drawer-link">🔥 Momentum Matrix</a>
-        <a href="#/oracle" class="drawer-link">📡 Oracle Feed</a>
-        <a href="#/gauntlet" class="drawer-link">🛡️ Gauntlet Protocol</a>
-        <a href="#/console" class="drawer-link">Console</a>
+        <a href="#how-it-works" class="drawer-link nav-section-link guest-only">Process</a>
+        <a href="#modules" class="drawer-link nav-section-link guest-only">Modules</a>
+        <a href="#use-cases" class="drawer-link nav-section-link guest-only">Capabilities</a>
+        <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 1rem 0;" class="nav-section-link guest-only"></div>
+        <div style="height:1px;background:rgba(255,255,255,0.1);margin:0.5rem 0;" class="auth-only"></div>
+        <a href="#/dashboard" class="drawer-link auth-only">Dashboard</a>
+        <a href="#/lab" class="drawer-link auth-only">Zenith Lab</a>
+        <a href="#/forge" class="drawer-link auth-only">Quantum Forge</a>
+        <a href="#/aura" class="drawer-link auth-only">Aura Nexus</a>
+        <a href="#/archive" class="drawer-link auth-only">Neural Archive</a>
+        <a href="#/chronos" class="drawer-link auth-only">Chronos Engine</a>
+        <div style="height:1px;background:rgba(255,255,255,0.1);margin:0.5rem 0;" class="auth-only"></div>
+        <a href="#/momentum" class="drawer-link auth-only">🔥 Momentum Matrix</a>
+        <a href="#/oracle" class="drawer-link auth-only">📡 Oracle Feed</a>
+        <a href="#/gauntlet" class="drawer-link auth-only">🛡️ Gauntlet Protocol</a>
+        <a href="#/console" class="drawer-link auth-only">Console</a>
+        <button class="drawer-link auth-only global-logout-btn" style="text-align: left; background: none; border: none; padding: 0; color: #ff4d4d; cursor: pointer; font-family: inherit; font-size: 1.25rem; font-weight: 600;">Logout</button>
     </div>
 
     <main id="router-view">
-        <section id="page-home" class="page-content active">
+        <section id="page-landing" class="page-content active">
             <header class="hero">
                 <div class="hero-badge reveal">Autonomous Personal Executive v2.0</div>
                 <h1 class="reveal">Your <span>Autonomous</span> Personal Goal Partner</h1>
@@ -147,7 +150,9 @@
                     </div>
                 </div>
             </section>
+        </section> <!-- End page-landing -->
 
+        <section id="page-dashboard" class="page-content">
             <section id="app-dashboard" style="padding: 100px 5%; max-width: 1400px; margin: 0 auto;">
                 <div class="section-header reveal" style="text-align: center; margin-bottom: 4rem;">
                     <h2>System Modules</h2>
@@ -213,7 +218,7 @@
                     </a>
                 </div>
             </section>
-        </section> <!-- End page-home -->
+        </section> <!-- End page-dashboard -->
 
         <!-- Mission Console Page -->
         <section id="page-console" class="page-content">
@@ -630,7 +635,7 @@
 
         <!-- ── AUTH PAGES ── -->
         <section id="page-login" class="page-content">
-            <div class="app-container" style="max-width: 450px; margin: 4rem auto;">
+            <div class="app-container" style="max-width: 450px; margin: 0 auto;">
                 <div class="lab-card auth-card">
                     <div class="panel-header" style="justify-content: center; margin-bottom: 2rem;">
                         <div class="logo">INITIATE SESSION</div>
@@ -656,7 +661,7 @@
         </section>
 
         <section id="page-signup" class="page-content">
-            <div class="app-container" style="max-width: 450px; margin: 4rem auto;">
+            <div class="app-container" style="max-width: 450px; margin: 0 auto;">
                 <div class="lab-card auth-card">
                     <div class="panel-header" style="justify-content: center; margin-bottom: 2rem;">
                         <div class="logo">REQUEST ACCESS</div>
@@ -687,7 +692,7 @@
 
         <!-- ── ONBOARDING FLOW ── -->
         <section id="page-onboarding" class="page-content">
-            <div class="app-container" style="max-width: 800px; margin: 4rem auto;">
+            <div class="app-container" style="max-width: 800px; margin: 0 auto;">
                 <div class="lab-card onboarding-card" id="onboarding-container">
                     <!-- Steps dynamically rendered by onboarding.js -->
                     <div class="onboarding-step active" id="ob-step-1">
@@ -706,7 +711,7 @@
 
         <!-- ── USER PROFILE ── -->
         <section id="page-profile" class="page-content">
-            <div class="app-container" style="max-width: 800px; margin: 4rem auto;">
+            <div class="app-container" style="max-width: 800px; margin: 0 auto;">
                 <div class="lab-card profile-card">
                     <div class="panel-header">
                         <i data-lucide="user" style="color: hsla(var(--primary), 1);"></i>
